@@ -6,7 +6,7 @@ namespace BHFunctioning.Models
     public class HealthData
     {
         [Key]
-        public int Id { get; set; }
+        public string Id { get; set; }
         [Range(0,1)]
         public int NEET { get; set; }
         [Range(0, 1)]

@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace BHFunctioning.Data.Migrations
+namespace BHFunctioning.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220324133809_new")]
-    partial class @new
+    [Migration("20220324160350_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,11 +26,8 @@ namespace BHFunctioning.Data.Migrations
 
             modelBuilder.Entity("BHFunctioning.Models.HealthData", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("ChildDx")
                         .HasColumnType("int");
@@ -61,7 +58,7 @@ namespace BHFunctioning.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Healthdata");
+                    b.ToTable("HealthData");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

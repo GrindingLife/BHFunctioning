@@ -1,5 +1,6 @@
 ﻿using BHFunctioning.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -8,11 +9,24 @@ namespace BHFunctioning.Controllers
     [Authorize]
     public class HomeController : Controller
     {
+        private const string RoleName = "Administrator";
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public HomeController(ILogger<HomeController> logger, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
         {
+            _roleManager = roleManager;
+            _userManager = userManager;
             _logger = logger;
+        }
+
+        private async Task<bool> RoleExistsAsync(string role)
+        {
+            if (await _roleManager.RoleExistsAsync(role))
+                return true;
+
+            else
+                return false;
         }
 
         public IActionResult Index()

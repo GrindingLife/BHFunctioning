@@ -1,5 +1,6 @@
 using BHFunctioning.Controllers;
 using BHFunctioning.Data;
+using BHFunctioning.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,8 +21,8 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.Sign
     .AddRoles<IdentityRole>()
     .AddDefaultUI()
     .AddDefaultTokenProviders();
-
 builder.Services.AddControllersWithViews();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -42,6 +43,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthentication();
+
+
 app.UseAuthorization();
 
 app.MapControllerRoute(
