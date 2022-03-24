@@ -10,6 +10,6 @@ namespace BHFunctioning.Data
             : base(options)
         {
         }
-        public DbSet<HealthData> Healthdata { get; set; }
+        public DbSet<HealthData> HealthData { get; set; }
     }
 }
