@@ -34,32 +34,122 @@ namespace BHFunctioning.Controllers
             return View();
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> GenerateHealthData()
+        {
+            Random rand = new();
+            for (int i = 1; i < 1000; i++)
+            {
+                string str = i.ToString();
+                HealthData tmp = new();
+                tmp.Id = str;
+                tmp.Id = i.ToString();
+                tmp.NEET = rand.Next() % 2;
+                tmp.Selfharm = rand.Next() % 2;
+                tmp.Psychosis = rand.Next() % 2;
+                tmp.Medical = rand.Next() % 2;
+                tmp.ChildDx = rand.Next() % 2;
+                tmp.Circadian = rand.Next() % 2;
+                tmp.Tripartite = rand.Next() % 4 + 1;
+                tmp.ClinicalStage = rand.Next() % 3 + 1;
+                tmp.Sofas = rand.Next() % 12 + 1;
+
+                _db.HealthData.Add(tmp);
+                await _db.SaveChangesAsync();               
+
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> RemoveHealthData()
+        {
+
+            List<HealthData> lis = new();
+            lis = _db.HealthData.ToList();
+            foreach (HealthData ele in lis)
+            {
+                _db.HealthData.Remove(ele);
+                await _db.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
+
+        }
+
+        //[HttpGet]
+        //public JsonResult HealthChart(string id)
+        //{
+        //    var healthList = _db.HealthData.();
+        //    return Json(healthList);
+        //}
+
+        [HttpGet]
+        public ActionResult VisualiseData()
+        {
+            var id = TempData["id"];
+            if (id != null)
+            {
+                //List<HealthDataFuture> DataList = new();
+                //var HealthDatas = _db.HealthDataFuture;
+                //foreach (HealthDataFuture data in HealthDatas)
+                //{
+                //    if (data.Id == id.ToString())
+                //    {
+                //        DataList.Add(data);
+                //    }
+                //}
+
+
+                return View(id);
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult AjaxMethod(string id)
+        {
+            List<object> chartData = new List<object>();
+            chartData.Add(new object[]
+                            {
+                            "Months", "SOFAS"
+                            });
+            //FOR SOME REASON IT KEEPS READING THE FIRST DATABASE ENTRY ONLY SO THERE ALL THE ENTRIES ARE THE SAME VALUE
+            var HealthDatas = _db.HealthDataFuture;
+            foreach (HealthDataFuture data in HealthDatas)
+            {
+                if (data.Id == id)
+                {
+                    chartData.Add(new object[]
+                        {
+                            data.Month, data.Sofas
+                        });
+                }
+            }
+
+            return Json(chartData);
+        }
+
         // POST: DataVizController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> CreateAsync(HealthData obj)
         {
-            System.Diagnostics.Debug.WriteLine("Medical: " + obj.Medical);
-            System.Diagnostics.Debug.WriteLine("ChildDX: " + obj.ChildDx);
-            System.Diagnostics.Debug.WriteLine("Selfharm: " + obj.Selfharm);
-            System.Diagnostics.Debug.WriteLine("Sofas: " + obj.Sofas);
-            System.Diagnostics.Debug.WriteLine("ClinicalStage: " + obj.ClinicalStage);
-            System.Diagnostics.Debug.WriteLine("Circadian: " + obj.Circadian);
-            System.Diagnostics.Debug.WriteLine("Tripartite: " + obj.Tripartite);
-            System.Diagnostics.Debug.WriteLine("Psychosis: " + obj.Psychosis);
-            System.Diagnostics.Debug.WriteLine("NEET: " + obj.NEET);
+            //System.Diagnostics.Debug.WriteLine("Medical: " + obj.Medical);
+            //System.Diagnostics.Debug.WriteLine("ChildDX: " + obj.ChildDx);
+            //System.Diagnostics.Debug.WriteLine("Selfharm: " + obj.Selfharm);
+            //System.Diagnostics.Debug.WriteLine("Sofas: " + obj.Sofas);
+            //System.Diagnostics.Debug.WriteLine("ClinicalStage: " + obj.ClinicalStage);
+            //System.Diagnostics.Debug.WriteLine("Circadian: " + obj.Circadian);
+            //System.Diagnostics.Debug.WriteLine("Tripartite: " + obj.Tripartite);
+            //System.Diagnostics.Debug.WriteLine("Psychosis: " + obj.Psychosis);
+            //System.Diagnostics.Debug.WriteLine("NEET: " + obj.NEET);
 
-            var iid = _db.HealthData.Select(
-                a => a.Medical == obj.Medical &&
-                a.ChildDx == obj.ChildDx &&
-                a.Selfharm == obj.Selfharm &&
-                a.Sofas == obj.Sofas &&
-                a.ClinicalStage == obj.ClinicalStage &&
-                a.Circadian == obj.Circadian &&
-                a.Tripartite == obj.Tripartite &&
-                a.Psychosis == obj.Psychosis &&
-                a.NEET > 5);
-            var objs = _db.HealthData.SingleOrDefault(
+            
+            var tmp = _db.HealthData.FirstOrDefault(
                 a => a.Medical == obj.Medical &&
                 a.ChildDx == obj.ChildDx &&
                 a.Selfharm == obj.Selfharm &&
@@ -69,41 +159,20 @@ namespace BHFunctioning.Controllers
                 a.Tripartite == obj.Tripartite &&
                 a.Psychosis == obj.Psychosis &&
                 a.NEET == obj.NEET);
-            //System.Diagnostics.Debug.WriteLine("Medical: " + objs.Medical);
-            //System.Diagnostics.Debug.WriteLine("ChildDX: " + objs.ChildDx);
-            //System.Diagnostics.Debug.WriteLine("Selfharm: " + objs.Selfharm);
-            //System.Diagnostics.Debug.WriteLine("Sofas: " + objs.Sofas);
-            //System.Diagnostics.Debug.WriteLine("ClinicalStage: " + objs.ClinicalStage);
-            //System.Diagnostics.Debug.WriteLine("Circadian: " + objs.Circadian);
-            //System.Diagnostics.Debug.WriteLine("Tripartite: " + objs.Tripartite);
-            //System.Diagnostics.Debug.WriteLine("Psychosis: " + objs.Psychosis);
-            //System.Diagnostics.Debug.WriteLine("NEET: " + objs.NEET);
-            Random rand = new();
-            for(int i = 1; i < 1000; i++)
-            {
-                HealthData tmp = new();
-                tmp.Id = i.ToString();
-                tmp.NEET = rand.Next(0, 1);
-                tmp.Selfharm = rand.Next(0, 1);
-                tmp.Psychosis = rand.Next(0, 1);
-                tmp.Medical = rand.Next(0,1);
-                tmp.ChildDx = rand.Next(0, 1);
-                tmp.Circadian = rand.Next(0, 1);
-                tmp.Tripartite = rand.Next(1, 4);
-                tmp.ClinicalStage = rand.Next(1, 3);
-                tmp.Sofas = rand.Next(1, 12);
-                var res = await _db.HealthData.AddAsync(tmp);
-                
-                
-                if(res == null)
-                {
-                    Console.WriteLine("Error");
-                    return View("Error");
-
-                }
-
+            //data.Medical == obj.Medical &&
+            //data.ChildDx == obj.ChildDx &&
+            //data.Selfharm == obj.Selfharm &&
+            //data.Sofas == obj.Sofas &&
+            //data.ClinicalStage == obj.ClinicalStage &&
+            //data.Circadian == obj.Circadian &&
+            //data.Tripartite == obj.Tripartite &&
+            //data.Psychosis == obj.Psychosis &&
+            //data.NEET == obj.NEET &&
+            //data.Sofas == obj.Sofas
+            TempData["id"] = tmp.Id;
+            if (tmp != null) {                 
+                return RedirectToAction("VisualiseData");
             }
-
             try
             {
                 return RedirectToAction(nameof(Index));

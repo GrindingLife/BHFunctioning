@@ -11,5 +11,8 @@ namespace BHFunctioning.Data
         {
         }
         public DbSet<HealthData> HealthData { get; set; }
+        public DbSet<HealthDataFuture> HealthDataFuture { get; set; }
+
+        
     }
 }

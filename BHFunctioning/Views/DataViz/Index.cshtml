@@ -3,6 +3,13 @@
 @{
     ViewData["Title"] = "Index";
 }
+<form class="form-control" method="post" asp-action="GenerateHealthData"> 
+    <button class="btn btn-primary" type="submit" asp-action="GenerateHealthData">Generate Health Data</button>
+</form>
+<form class="form-control" method="post" asp-action="RemoveHealthData"> 
+    <button class="btn btn-danger" asp-action="RemoveHealthData">Delete Health Data</button>
+</form>
+
 <form class="form-inline col-md-3 form-control" method="post" asp-action="create">
     <table class="d-table table table-responsive">
         <tr class="row">
@@ -168,33 +175,4 @@
 
 </form>
 
-<div class="align-content-around" id="DataViz">
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script>
 
-        google.charts.load('current', {'packages':['corechart']});
-        google.charts.setOnLoadCallback(drawChart);
-        function drawChart() {
-
-        // Create the data table.
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Topping');
-        data.addColumn('number', 'Slices');
-        data.addRows([
-            ['Mushrooms', 3],
-            ['Onions', 1],
-            ['Olives', 1],
-            ['Zucchini', 1],
-            ['Pepperoni', 2]
-        ]);
-        // Set chart options
-        var options = {'title':'How Much Pizza I Ate Last Night',
-            'width':1000,
-            'height':1000};
-        // Instantiate and draw our chart, passing in some options.
-        var chart = new google.visualization.ScatterChart(document.getElementById('chart_div'));
-        chart.draw(data, options);
-        }
-    </script>
-    <div id="chart_div" style="width:1000; height:1000"></div>
-</div>
