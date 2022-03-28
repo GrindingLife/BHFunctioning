@@ -12,14 +12,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BHFunctioning.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220324160350_init")]
+    [Migration("20220328130817_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.2")
+                .HasAnnotation("ProductVersion", "6.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -59,6 +59,28 @@ namespace BHFunctioning.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("HealthData");
+                });
+
+            modelBuilder.Entity("BHFunctioning.Models.HealthDataFuture", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("HealthDataFK")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Month")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Sofas")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HealthDataFK");
+
+                    b.ToTable("HealthDataFuture");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -259,6 +281,15 @@ namespace BHFunctioning.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("BHFunctioning.Models.HealthDataFuture", b =>
+                {
+                    b.HasOne("BHFunctioning.Models.HealthData", null)
+                        .WithMany("HealthDataFutures")
+                        .HasForeignKey("HealthDataFK")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -308,6 +339,11 @@ namespace BHFunctioning.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("BHFunctioning.Models.HealthData", b =>
+                {
+                    b.Navigation("HealthDataFutures");
                 });
 #pragma warning restore 612, 618
         }

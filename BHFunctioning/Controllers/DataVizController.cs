@@ -56,7 +56,7 @@ namespace BHFunctioning.Controllers
                 tmp.Sofas = rand.Next() % 12 + 1;
 
                 _db.HealthData.Add(tmp);
-                await _db.SaveChangesAsync();               
+                await _db.SaveChangesAsync();
 
             }
             return RedirectToAction(nameof(Index));
@@ -79,30 +79,12 @@ namespace BHFunctioning.Controllers
 
         }
 
-        //[HttpGet]
-        //public JsonResult HealthChart(string id)
-        //{
-        //    var healthList = _db.HealthData.();
-        //    return Json(healthList);
-        //}
-
         [HttpGet]
         public ActionResult VisualiseData()
         {
             var id = TempData["id"];
             if (id != null)
             {
-                //List<HealthDataFuture> DataList = new();
-                //var HealthDatas = _db.HealthDataFuture;
-                //foreach (HealthDataFuture data in HealthDatas)
-                //{
-                //    if (data.Id == id.ToString())
-                //    {
-                //        DataList.Add(data);
-                //    }
-                //}
-
-
                 return View(id);
             }
 
@@ -117,18 +99,41 @@ namespace BHFunctioning.Controllers
                             {
                             "Months", "SOFAS"
                             });
-            //FOR SOME REASON IT KEEPS READING THE FIRST DATABASE ENTRY ONLY SO THERE ALL THE ENTRIES ARE THE SAME VALUE
-            var HealthDatas = _db.HealthDataFuture;
-            foreach (HealthDataFuture data in HealthDatas)
+
+            List<HealthDataFuture> DataList6 = _db.HealthDataFuture.Where(a => a.HealthDataFK == id && a.Month == 6).OrderByDescending(b => b.Month).ToList();
+            List<HealthDataFuture> DataList12 = _db.HealthDataFuture.Where(a => a.HealthDataFK == id && a.Month == 12).OrderByDescending(b => b.Month).ToList();
+
+            int avgSofas6 = 0;
+            int avgSofas12 = 0;
+
+            foreach(HealthDataFuture tmp in DataList6)
             {
-                if (data.Id == id)
-                {
-                    chartData.Add(new object[]
-                        {
-                            data.Month, data.Sofas
-                        });
-                }
+                avgSofas6 += tmp.Sofas;
             }
+            avgSofas6 = avgSofas6 / DataList6.Count;
+            chartData.Add(new object[]
+                        {
+                            6, avgSofas6
+                        });
+            foreach (HealthDataFuture tmp in DataList12)
+            {
+                avgSofas12 += tmp.Sofas;
+            }
+            avgSofas12 = avgSofas12 / DataList12.Count;
+            chartData.Add(new object[]
+                        {
+                            12, avgSofas12
+                        });
+            //foreach (HealthDataFuture data in DataList12)
+            //{
+            //    if (data.HealthDataFK == id)
+            //    {
+            //        chartData.Add(new object[]
+            //            {
+            //                data.Month, data.Sofas
+            //            });
+            //    }
+            //}
 
             return Json(chartData);
         }
@@ -138,17 +143,7 @@ namespace BHFunctioning.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> CreateAsync(HealthData obj)
         {
-            //System.Diagnostics.Debug.WriteLine("Medical: " + obj.Medical);
-            //System.Diagnostics.Debug.WriteLine("ChildDX: " + obj.ChildDx);
-            //System.Diagnostics.Debug.WriteLine("Selfharm: " + obj.Selfharm);
-            //System.Diagnostics.Debug.WriteLine("Sofas: " + obj.Sofas);
-            //System.Diagnostics.Debug.WriteLine("ClinicalStage: " + obj.ClinicalStage);
-            //System.Diagnostics.Debug.WriteLine("Circadian: " + obj.Circadian);
-            //System.Diagnostics.Debug.WriteLine("Tripartite: " + obj.Tripartite);
-            //System.Diagnostics.Debug.WriteLine("Psychosis: " + obj.Psychosis);
-            //System.Diagnostics.Debug.WriteLine("NEET: " + obj.NEET);
 
-            
             var tmp = _db.HealthData.FirstOrDefault(
                 a => a.Medical == obj.Medical &&
                 a.ChildDx == obj.ChildDx &&
@@ -159,18 +154,10 @@ namespace BHFunctioning.Controllers
                 a.Tripartite == obj.Tripartite &&
                 a.Psychosis == obj.Psychosis &&
                 a.NEET == obj.NEET);
-            //data.Medical == obj.Medical &&
-            //data.ChildDx == obj.ChildDx &&
-            //data.Selfharm == obj.Selfharm &&
-            //data.Sofas == obj.Sofas &&
-            //data.ClinicalStage == obj.ClinicalStage &&
-            //data.Circadian == obj.Circadian &&
-            //data.Tripartite == obj.Tripartite &&
-            //data.Psychosis == obj.Psychosis &&
-            //data.NEET == obj.NEET &&
-            //data.Sofas == obj.Sofas
+
             TempData["id"] = tmp.Id;
-            if (tmp != null) {                 
+            if (tmp != null)
+            {
                 return RedirectToAction("VisualiseData");
             }
             try

@@ -21,7 +21,7 @@
                 dataType: "json",
                 success: function (r) {
                     var data = google.visualization.arrayToDataTable(r);
- 
+                    
                     //Pie
                     var options = {
                       width: 1000,
@@ -32,7 +32,7 @@
                       hAxis: {title: 'Months'},
                       vAxis: {title: 'SOFAS score'}
                     };
-                    var chart = new google.visualization.ScatterChart(document.getElementById('chart_div'));
+                    var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
                     chart.draw(data, options);
                 },
                 failure: function (r) {

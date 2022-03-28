@@ -174,6 +174,26 @@ namespace BHFunctioning.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "HealthDataFuture",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Month = table.Column<int>(type: "int", nullable: false),
+                    Sofas = table.Column<int>(type: "int", nullable: false),
+                    HealthDataFK = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HealthDataFuture", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_HealthDataFuture_HealthData_HealthDataFK",
+                        column: x => x.HealthDataFK,
+                        principalTable: "HealthData",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -212,6 +232,11 @@ namespace BHFunctioning.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HealthDataFuture_HealthDataFK",
+                table: "HealthDataFuture",
+                column: "HealthDataFK");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -232,13 +257,16 @@ namespace BHFunctioning.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "HealthData");
+                name: "HealthDataFuture");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "HealthData");
         }
     }
 }
