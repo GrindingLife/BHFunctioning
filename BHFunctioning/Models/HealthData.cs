@@ -1,4 +1,5 @@
 ﻿using BHFunctioning.Data;
+using CsvHelper.Configuration.Attributes;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,25 +8,28 @@ namespace BHFunctioning.Models
     public class HealthData
     {
         [Key]
+        [Name("id")]
         public string Id { get; set; }
-        
-        [Range(0,1)]
-        public int NEET { get; set; }
-        [Range(0, 1)]
-        public int Selfharm { get; set; }
-        [Range(0, 1)]
-        public int Psychosis { get; set; }
-        [Range(0, 1)]
-        public int Medical { get; set; }
-        [Range(0, 1)]
-        public int ChildDx { get; set; }
-        [Range(0, 1)]
-        public int Circadian { get; set; }
-        [Range(1, 4)]
+        [Name("NEET")]
+        public bool NEET { get; set; }
+        [Name("Selfharm")]
+        public bool Selfharm { get; set; }
+        [Name("Psychosis")]
+        public bool Psychosis { get; set; }
+        [Name("Medical")]
+        public bool Medical { get; set; }
+        [Name("ChildDx")]
+        public bool ChildDx { get; set; }
+        [Name("Circadian")]
+        public bool Circadian { get; set; }
+        [Name("Tripartite")]
+        [Range(0, 3)]
         public int Tripartite { get; set; }
-        [Range(1, 3)]
+        [Name("ClinicalStage")]
+        [Range(0, 2)]
         public int ClinicalStage { get; set; }
-        [Range(1, 6)]
+        [Name("Sofas")]
+        [Range(0, 9)]
         public int Sofas { get; set; }
         [ForeignKey("HealthDataFK")]
         public ICollection<HealthDataFuture> HealthDataFutures { get; set; }
@@ -35,7 +39,7 @@ namespace BHFunctioning.Models
     {       
         public string Id { get; set; }
         public int Month { get; set; }
-        [Range(1, 12)]
+        [Range(0, 9)]
         public int Sofas { get; set; }
         [ForeignKey("HealthData")]
         public string HealthDataFK { get; set; }

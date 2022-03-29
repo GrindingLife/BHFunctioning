@@ -21,47 +21,6 @@ namespace BHFunctioning.Controllers
             return View();
         }
 
-        // GET: DataVizController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: DataVizController/Create
-        [HttpGet]
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> GenerateHealthData()
-        {
-            Random rand = new();
-            for (int i = 1; i < 1000; i++)
-            {
-                string str = i.ToString();
-                HealthData tmp = new();
-                tmp.Id = str;
-                tmp.Id = i.ToString();
-                tmp.NEET = rand.Next() % 2;
-                tmp.Selfharm = rand.Next() % 2;
-                tmp.Psychosis = rand.Next() % 2;
-                tmp.Medical = rand.Next() % 2;
-                tmp.ChildDx = rand.Next() % 2;
-                tmp.Circadian = rand.Next() % 2;
-                tmp.Tripartite = rand.Next() % 4 + 1;
-                tmp.ClinicalStage = rand.Next() % 3 + 1;
-                tmp.Sofas = rand.Next() % 12 + 1;
-
-                _db.HealthData.Add(tmp);
-                await _db.SaveChangesAsync();
-
-            }
-            return RedirectToAction(nameof(Index));
-        }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> RemoveHealthData()
@@ -75,10 +34,25 @@ namespace BHFunctioning.Controllers
                 await _db.SaveChangesAsync();
             }
 
+            //List<HealthDataFuture> list = new();
+            //list = _db.HealthDataFuture.ToList();
+            //foreach (HealthDataFuture ele in list)
+            //{
+            //    _db.HealthDataFuture.Remove(ele);
+            //    await _db.SaveChangesAsync();
+            //}
+
             return RedirectToAction(nameof(Index));
 
         }
 
+        [HttpPost]
+        public ActionResult AddCSV()
+        {
+            CsvRead r = new();
+            r.readToDB(_db);
+            return RedirectToAction("Index");
+        }
         [HttpGet]
         public ActionResult VisualiseData()
         {
@@ -92,14 +66,35 @@ namespace BHFunctioning.Controllers
         }
 
         [HttpPost]
-        public IActionResult AjaxMethod(string id)
+        public IActionResult AjaxMethod(bool NEET, bool Selfharm, bool Psychosis, bool Medical, bool ChildDx, bool Circadian, int Tripartite, int ClinicalStage, int SOFAS)
         {
+
+            var temp = _db.HealthData.FirstOrDefault(
+                a => a.Medical == Medical &&
+                a.ChildDx == ChildDx &&
+                a.Selfharm == Selfharm &&
+                a.Sofas == SOFAS &&
+                a.ClinicalStage == ClinicalStage &&
+                a.Circadian == Circadian &&
+                a.Tripartite == Tripartite &&
+                a.Psychosis == Psychosis &&
+                a.NEET == NEET);
+
+            if(temp == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            var id = temp.Id;
             List<object> chartData = new List<object>();
             chartData.Add(new object[]
                             {
                             "Months", "SOFAS"
                             });
-
+            chartData.Add(new object[]
+                            {
+                            0, SOFAS
+                            });
             List<HealthDataFuture> DataList6 = _db.HealthDataFuture.Where(a => a.HealthDataFK == id && a.Month == 6).OrderByDescending(b => b.Month).ToList();
             List<HealthDataFuture> DataList12 = _db.HealthDataFuture.Where(a => a.HealthDataFK == id && a.Month == 12).OrderByDescending(b => b.Month).ToList();
 
@@ -124,16 +119,6 @@ namespace BHFunctioning.Controllers
                         {
                             12, avgSofas12
                         });
-            //foreach (HealthDataFuture data in DataList12)
-            //{
-            //    if (data.HealthDataFK == id)
-            //    {
-            //        chartData.Add(new object[]
-            //            {
-            //                data.Month, data.Sofas
-            //            });
-            //    }
-            //}
 
             return Json(chartData);
         }
@@ -141,7 +126,7 @@ namespace BHFunctioning.Controllers
         // POST: DataVizController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CreateAsync(HealthData obj)
+        public async Task<ActionResult> Index(HealthData obj)
         {
 
             var tmp = _db.HealthData.FirstOrDefault(
@@ -155,10 +140,11 @@ namespace BHFunctioning.Controllers
                 a.Psychosis == obj.Psychosis &&
                 a.NEET == obj.NEET);
 
-            TempData["id"] = tmp.Id;
+            
             if (tmp != null)
             {
-                return RedirectToAction("VisualiseData");
+                TempData["id"] = tmp.Id;
+                return View(obj);
             }
             try
             {
@@ -170,46 +156,6 @@ namespace BHFunctioning.Controllers
             }
         }
 
-        // GET: DataVizController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: DataVizController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: DataVizController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: DataVizController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+       
     }
 }
