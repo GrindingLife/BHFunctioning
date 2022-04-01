@@ -65,13 +65,18 @@
 
                                 //graph options
                                 var options = {
-                                    width: 1000,
-                                    height: 1000,
+                                    width: 800,
+                                    height: 650,
                                     chart: {
                                     title: 'SOFAS future prediction'
                                     },
                                     hAxis: {title: 'Months'},
-                                    vAxis: {title: 'SOFAS score'}
+                                    vAxis: {title: 'SOFAS score',
+                                    viewWindow:{
+                                        min:0,
+                                        max:10
+                                        }
+                                    }
                                 };
                                 var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
                                 chart.draw(data, options);
@@ -88,13 +93,12 @@
         });
     };
 </script>
-<form class="form-control" method="post" asp-action="AddCSV"> 
+<form class="form-control-lg" method="post"> 
     <button class="btn btn-primary" type="submit" asp-action="AddCSV">add CSV file to database</button>
+        <button class="btn btn-danger" asp-action="RemoveHealthData">Delete Health Data</button>
 </form>
-<form class="form-control" method="post" asp-action="RemoveHealthData"> 
-    <button class="btn btn-danger" asp-action="RemoveHealthData">Delete Health Data</button>
-</form>
-<div class="container-fluid">
+
+<div class="container-fluid container">
     <div class="row">
         <form class="col-xs-6 col form-control">
             <table class="">
@@ -103,7 +107,7 @@
                         <h2 class="text-primary">Enter inputs</h2>
                     </div>
                 </tr>
-                @*        <div asp-validation-summary="All"></div>*@
+                        
                 <tr>
                     <th>
                         <div>
@@ -251,7 +255,7 @@
                     </td>
                 </tr>
                 <tr>
-
+                    <div asp-validation-summary="All"></div>
                     <td class="d-table-cell p-1">
                         <button id="graphData" type="button" name="graphData" class="btn btn-primary mb-2">Submit</button>
                     </td>

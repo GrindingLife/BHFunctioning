@@ -20,48 +20,7 @@ namespace BHFunctioning.Controllers
             _userManager = userManager;
             
 
-        }
-
-        public void CheckAdmin()
-        {
-            if (AdminExistsAsync() == false)
-            {
-                CreateAdmin();
-            }
-        }
-
-        private bool CreateAdmin()
-        {
-
-            IdentityRole identityRole = new();
-            identityRole.Name = "Administrator";
-            identityRole.NormalizedName = "Administrator";
-            var res = _roleManager.CreateAsync(identityRole);
-            if(res != null)
-            {
-                return true;
-            }
-            return false;
-        }
-        private bool AdminExistsAsync()
-        {
-            bool AdminExist;
-            Role admin = new();
-            admin.Name = "Administrator";
-            var role = _roleManager.FindByNameAsync(admin.Name);
-
-            if(role == null)
-            {
-                AdminExist = false;
-            }
-            else
-            {
-                AdminExist = true;
-            }
-
-            return AdminExist;
-
-        }
+        } 
 
         //Main page of role management, displays all roles
         [HttpGet]
@@ -69,6 +28,13 @@ namespace BHFunctioning.Controllers
         {
             var roles = _roleManager.Roles;
             return View(roles);
+        }
+
+        [HttpGet]
+        public IActionResult ListUsers()
+        {
+            var users = _userManager.Users;
+            return View(users);
         }
 
         [HttpGet]
@@ -107,6 +73,51 @@ namespace BHFunctioning.Controllers
             
                 return View(roleObj);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> EditUser(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            EditUserModel model = new();
+            model.Id = user.Id;
+            model.Name = user.UserName;
+            var inRoles = await _userManager.GetRolesAsync(user);
+            foreach (var roles in inRoles)
+            {
+                model.Users.Add(roles);
+            }
+            return View(model);
+
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditUser(EditRoleModel obj)
+        {
+            //id.Id is null for some reason no idea
+            var newRole = await _roleManager.FindByIdAsync(obj.Id);
+            if (newRole == null)
+            {
+                ViewData["ErrorMessage"] = $"No role with Id '{obj.Id}' was found";
+                return View("Error");
+            }
+            else
+            {
+                newRole.Name = obj.Name;
+                var res = await _roleManager.UpdateAsync(newRole);
+                if (res.Succeeded)
+                {
+                    return RedirectToAction("ListRoles");
+                }
+                else
+                {
+                    ModelState.AddModelError("Name", "Error editing Role");
+                }
+            }
+
+            return View(newRole);
+        }
+
         [HttpGet]
         public async Task<IActionResult> EditRole(string id)
         {
@@ -128,7 +139,7 @@ namespace BHFunctioning.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditRoleAsync(EditRoleModel obj)
+        public async Task<IActionResult> EditRole(EditRoleModel obj)
         {
             //id.Id is null for some reason no idea
             var newRole = await _roleManager.FindByIdAsync(obj.Id);
@@ -151,6 +162,58 @@ namespace BHFunctioning.Controllers
             }
 
             return View(newRole);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            var getUser = await _userManager.FindByIdAsync(id);
+
+            User Tempmodel = new();
+            Tempmodel.Id = getUser.Id.ToString();
+            Tempmodel.UserName = getUser.UserName;            
+            
+            return View(Tempmodel);
+
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteUser(User obj)
+        {
+            IdentityUser getUser = await _userManager.FindByIdAsync(obj.Id);
+            if (getUser == null)
+            {
+                ViewData["ErrorMessage"] = $"No User with Id '{obj.Id}' was found";
+                return View("Error");
+            }
+            else
+            {
+                //Check if there are any user is assigned in any role and unassign them from role before deleting
+                var inRoles = await _userManager.GetRolesAsync(getUser);
+
+                if(inRoles != null) 
+                { 
+                    var resu = await _userManager.RemoveFromRolesAsync(getUser, inRoles);
+                    if (!resu.Succeeded)
+                    {
+                        ModelState.AddModelError("","Error removing roles from user before deleting");
+                        return View(obj);
+                    }
+                }
+
+                //deleteing the user 
+                var res = await _userManager.DeleteAsync(getUser);
+                if (res.Succeeded)
+                {
+                    return RedirectToAction("ListUser");
+                }
+                else
+                {
+                    ModelState.AddModelError("Name", "Error deleting User");
+                }
+            }
+
+            return View(getUser);
         }
 
         [HttpGet]

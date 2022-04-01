@@ -26,21 +26,21 @@ namespace BHFunctioning.Controllers
         public async Task<ActionResult> RemoveHealthData()
         {
 
-            List<HealthData> lis = new();
-            lis = _db.HealthData.ToList();
-            foreach (HealthData ele in lis)
-            {
-                _db.HealthData.Remove(ele);
-                await _db.SaveChangesAsync();
-            }
-
-            //List<HealthDataFuture> list = new();
-            //list = _db.HealthDataFuture.ToList();
-            //foreach (HealthDataFuture ele in list)
+            //List<HealthData> lis = new();
+            //lis = _db.HealthData.ToList();
+            //foreach (HealthData ele in lis)
             //{
-            //    _db.HealthDataFuture.Remove(ele);
+            //    _db.HealthData.Remove(ele);
             //    await _db.SaveChangesAsync();
             //}
+
+            List<HealthDataFuture> list = new();
+            list = _db.HealthDataFuture.ToList();
+            foreach (HealthDataFuture ele in list)
+            {
+                _db.HealthDataFuture.Remove(ele);
+                await _db.SaveChangesAsync();
+            }
 
             return RedirectToAction(nameof(Index));
 
@@ -80,7 +80,7 @@ namespace BHFunctioning.Controllers
                 a.Psychosis == Psychosis &&
                 a.NEET == NEET);
 
-            if(temp == null)
+            if (temp == null)
             {
                 return RedirectToAction("Index");
             }
@@ -100,62 +100,67 @@ namespace BHFunctioning.Controllers
 
             int avgSofas6 = 0;
             int avgSofas12 = 0;
-
-            foreach(HealthDataFuture tmp in DataList6)
+            if (DataList6 != null)
             {
-                avgSofas6 += tmp.Sofas;
-            }
-            avgSofas6 = avgSofas6 / DataList6.Count;
-            chartData.Add(new object[]
-                        {
+                foreach (HealthDataFuture tmp in DataList6)
+                {
+                    avgSofas6 += tmp.Sofas;
+                }
+                avgSofas6 = avgSofas6 / DataList6.Count;
+                chartData.Add(new object[]
+                            {
                             6, avgSofas6
-                        });
-            foreach (HealthDataFuture tmp in DataList12)
-            {
-                avgSofas12 += tmp.Sofas;
+                            });
             }
-            avgSofas12 = avgSofas12 / DataList12.Count;
-            chartData.Add(new object[]
-                        {
-                            12, avgSofas12
-                        });
+            if (DataList12 != null)
+            {
 
+                foreach (HealthDataFuture tmp in DataList12)
+                {
+                    avgSofas12 += tmp.Sofas;
+                }
+                avgSofas12 = avgSofas12 / DataList12.Count;
+                chartData.Add(new object[]
+                            {
+                            12, avgSofas12
+                            });
+            }
             return Json(chartData);
         }
 
-        // POST: DataVizController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Index(HealthData obj)
-        {
+            // POST: DataVizController/Create
+            [HttpPost]
+            [ValidateAntiForgeryToken]
+            public async Task<ActionResult> Index(HealthData obj)
+            {
 
-            var tmp = _db.HealthData.FirstOrDefault(
-                a => a.Medical == obj.Medical &&
-                a.ChildDx == obj.ChildDx &&
-                a.Selfharm == obj.Selfharm &&
-                a.Sofas == obj.Sofas &&
-                a.ClinicalStage == obj.ClinicalStage &&
-                a.Circadian == obj.Circadian &&
-                a.Tripartite == obj.Tripartite &&
-                a.Psychosis == obj.Psychosis &&
-                a.NEET == obj.NEET);
+                var tmp = _db.HealthData.FirstOrDefault(
+                    a => a.Medical == obj.Medical &&
+                    a.ChildDx == obj.ChildDx &&
+                    a.Selfharm == obj.Selfharm &&
+                    a.Sofas == obj.Sofas &&
+                    a.ClinicalStage == obj.ClinicalStage &&
+                    a.Circadian == obj.Circadian &&
+                    a.Tripartite == obj.Tripartite &&
+                    a.Psychosis == obj.Psychosis &&
+                    a.NEET == obj.NEET);
 
-            
-            if (tmp != null)
-            {
-                TempData["id"] = tmp.Id;
-                return View(obj);
+
+                if (tmp != null)
+                {
+                    TempData["id"] = tmp.Id;
+                    return View(obj);
+                }
+                try
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                catch
+                {
+                    return View();
+                }
             }
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+
+
         }
-
-       
     }
-}

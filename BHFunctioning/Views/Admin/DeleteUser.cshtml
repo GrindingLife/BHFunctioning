@@ -1,0 +1,21 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model User
+@{
+    <form method="post" class="col-5 form-control align-items-center">
+        <div class="form-check col-5">
+            <div class="modal-header">
+                <h4 class=" row" id="addUserLable">Would you like to delete the User: @Model.UserName?</h4>
+            </div>
+            <label asp-for="UserName"></label>
+            <input asp-for="UserName" name="Name" disabled class="form-control" />
+                <div class="text-danger" asp-validation-summary="All"></div>
+
+            <div class="btn-toolbar p-2">
+                <button type="button"  class="btn btn-secondary col-2"><a class="text-decoration-none" style="color: white;" asp-action="ListUsers">Cancel</a></button>
+                <button type="submit" class="btn btn-primary col-2">Delete</button>
+            </div>
+        </div>
+    </form>
+}

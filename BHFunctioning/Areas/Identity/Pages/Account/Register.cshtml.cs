@@ -124,7 +124,7 @@ namespace BHFunctioning.Areas.Identity.Pages.Account
                    
                     TempData["success"] = "Successfully created user";
 
-                    return RedirectToAction("Index");
+                    return RedirectToAction("ListUsers", "Admin");
                    
 
                     //await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
