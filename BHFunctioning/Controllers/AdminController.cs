@@ -271,6 +271,7 @@ namespace BHFunctioning.Controllers
             return View(newRole);
         }
 
+        //Role management for setting users into specific role
         [HttpGet]
         public async Task<IActionResult> EditRoleUser(string id)
         {
@@ -335,6 +336,80 @@ namespace BHFunctioning.Controllers
             }
 
             return RedirectToAction("ListRoles", new {id = obj[0].rId });
+        }
+
+        //User roles management 
+        [HttpGet]
+        public async Task<IActionResult> EditUserRole(string id)
+        {
+            
+            var user = await _userManager.FindByIdAsync(id);
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var roles = _roleManager.Roles.ToList();
+            List<RolesModel> listOfUsersInRole = new();
+            ViewData["rID"] = id;
+            //Goes through each user and adds them into the list 
+            foreach (var role in roles)
+            {
+                RolesModel temp = new();
+                temp.Id = user.Id;
+                temp.Name = user.UserName;
+                temp.rName = role.Name;
+                temp.rId = role.Id;
+                //Checks if the user has the role and if it does, it will check the checkbox
+                if(await _userManager.IsInRoleAsync(user, role.Name))
+                {
+                    temp.IsSelected = true;
+                }
+                else
+                {
+                    temp.IsSelected = false;
+                }
+                listOfUsersInRole.Add(temp);
+                
+            }
+            return View(listOfUsersInRole);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditUserRole(List<RolesModel> obj)
+        {
+
+            var user = await _userManager.FindByIdAsync(obj[0].Id);
+            if (user == null)
+            {
+                ModelState.AddModelError("", "Role was null");
+                return View();
+            }
+            //goes through each UserRoleModel in the list
+            foreach (RolesModel role in obj)
+            {
+                //creates a 
+                if (role.IsSelected)
+                {
+                    if (!await _userManager.IsInRoleAsync(user, role.rName))
+                    {
+                        var res = await _userManager.AddToRoleAsync(user, role.rName);
+                        if (!res.Succeeded)
+                        {
+                            ModelState.AddModelError("", "Error adding role from user");
+                        }
+                    }
+                }
+                else
+                {
+                    if (await _userManager.IsInRoleAsync(user, role.rName))
+                    {
+                        var res = await _userManager.RemoveFromRoleAsync(user, role.rName);
+                        if (!res.Succeeded)
+                        {
+                            ModelState.AddModelError("","Error removing role from user");
+                        }
+                    }
+                }
+            }
+
+            return RedirectToAction("ListUsers", new { id = obj[0].rId });
         }
 
     }

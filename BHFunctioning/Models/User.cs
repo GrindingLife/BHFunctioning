@@ -18,4 +18,16 @@ namespace BHFunctioning.Models
         public List<string> Users { get; set; } = new();
 
     }
+    public class RolesModel
+    {
+        //User id
+        public string Id { get; set; }
+        //User Name
+        public string Name { get; set; }
+        //Role Name
+        public string rName { get; set; }
+
+        public string rId { get; set; }
+        public bool IsSelected { get; set; }
+    }
 }
