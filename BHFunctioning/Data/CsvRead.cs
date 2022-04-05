@@ -22,6 +22,12 @@ namespace BHFunctioning.Data
             Map(m => m.Tripartite).Name("Tripartite");
             Map(m => m.ClinicalStage).Name("ClinicalStage");
             Map(m => m.Sofas).Name("Sofas");
+            Map(m => m.Alert).Name("Alert");
+            Map(m => m.Constant).Name("Constant");
+            Map(m => m.Up).Name("Up");
+            Map(m => m.Down).Name("Down");
+            Map(m => m.Mean).Name("Mean");
+            Map(m => m.StandardDeviation).Name("StandardDeviation");
 
         }
 

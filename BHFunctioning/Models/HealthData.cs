@@ -31,6 +31,19 @@ namespace BHFunctioning.Models
         [Name("Sofas")]
         [Range(0, 9)]
         public int Sofas { get; set; }
+        [Name("Alert")]
+        [Range(0, 1)]
+        public int Alert { get; set; }
+        [Name("Constant")]
+        public float Constant { get; set; }
+        [Name("Up")]
+        public float Up { get; set; }
+        [Name("Down")]
+        public float Down { get; set; }
+        [Name("Mean")]
+        public float Mean { get; set; }
+        [Name("StandardDeviation")]
+        public float StandardDeviation { get; set; }
         [ForeignKey("HealthDataFK")]
         public ICollection<HealthDataFuture> HealthDataFutures { get; set; }
 

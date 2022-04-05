@@ -26,21 +26,21 @@ namespace BHFunctioning.Controllers
         public async Task<ActionResult> RemoveHealthData()
         {
 
-            //List<HealthData> lis = new();
-            //lis = _db.HealthData.ToList();
-            //foreach (HealthData ele in lis)
-            //{
-            //    _db.HealthData.Remove(ele);
-            //    await _db.SaveChangesAsync();
-            //}
-
-            List<HealthDataFuture> list = new();
-            list = _db.HealthDataFuture.ToList();
-            foreach (HealthDataFuture ele in list)
+            List<HealthData> lis = new();
+            lis = _db.HealthData.ToList();
+            foreach (HealthData ele in lis)
             {
-                _db.HealthDataFuture.Remove(ele);
+                _db.HealthData.Remove(ele);
                 await _db.SaveChangesAsync();
             }
+
+            //List<HealthDataFuture> list = new();
+            //list = _db.HealthDataFuture.ToList();
+            //foreach (HealthDataFuture ele in list)
+            //{
+            //    _db.HealthDataFuture.Remove(ele);
+            //    await _db.SaveChangesAsync();
+            //}
 
             return RedirectToAction(nameof(Index));
 
@@ -95,34 +95,23 @@ namespace BHFunctioning.Controllers
                             {
                             0, SOFAS
                             });
-            List<HealthDataFuture> DataList6 = _db.HealthDataFuture.Where(a => a.HealthDataFK == id && a.Month == 6).OrderByDescending(b => b.Month).ToList();
-            List<HealthDataFuture> DataList12 = _db.HealthDataFuture.Where(a => a.HealthDataFK == id && a.Month == 12).OrderByDescending(b => b.Month).ToList();
+            HealthDataFuture DataList6 = _db.HealthDataFuture.SingleOrDefault(a => a.HealthDataFK == id && a.Month == 6);
+            HealthDataFuture DataList12 = _db.HealthDataFuture.SingleOrDefault(a => a.HealthDataFK == id && a.Month == 12);
 
-            int avgSofas6 = 0;
-            int avgSofas12 = 0;
             if (DataList6 != null)
             {
-                foreach (HealthDataFuture tmp in DataList6)
-                {
-                    avgSofas6 += tmp.Sofas;
-                }
-                avgSofas6 = avgSofas6 / DataList6.Count;
+                
                 chartData.Add(new object[]
                             {
-                            6, avgSofas6
+                            6, DataList6.Sofas
                             });
             }
             if (DataList12 != null)
             {
-
-                foreach (HealthDataFuture tmp in DataList12)
-                {
-                    avgSofas12 += tmp.Sofas;
-                }
-                avgSofas12 = avgSofas12 / DataList12.Count;
+              
                 chartData.Add(new object[]
                             {
-                            12, avgSofas12
+                            12, DataList12.Sofas
                             });
             }
             return Json(chartData);

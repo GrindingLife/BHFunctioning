@@ -205,7 +205,7 @@ namespace BHFunctioning.Controllers
                 var res = await _userManager.DeleteAsync(getUser);
                 if (res.Succeeded)
                 {
-                    return RedirectToAction("ListUser");
+                    return RedirectToAction("ListUsers");
                 }
                 else
                 {
