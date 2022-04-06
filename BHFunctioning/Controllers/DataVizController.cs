@@ -53,20 +53,9 @@ namespace BHFunctioning.Controllers
             r.readToDB(_db);
             return RedirectToAction("Index");
         }
-        [HttpGet]
-        public ActionResult VisualiseData()
-        {
-            var id = TempData["id"];
-            if (id != null)
-            {
-                return View(id);
-            }
-
-            return RedirectToAction("Index");
-        }
 
         [HttpPost]
-        public IActionResult AjaxMethod(bool NEET, bool Selfharm, bool Psychosis, bool Medical, bool ChildDx, bool Circadian, int Tripartite, int ClinicalStage, int SOFAS)
+        public IActionResult GetAlert(bool NEET, bool Selfharm, bool Psychosis, bool Medical, bool ChildDx, bool Circadian, int Tripartite, int ClinicalStage, int SOFAS)
         {
 
             var temp = _db.HealthData.FirstOrDefault(
@@ -82,6 +71,41 @@ namespace BHFunctioning.Controllers
 
             if (temp == null)
             {
+                ModelState.AddModelError("", "Error finding health data, returns null");
+                return RedirectToAction("Index");
+            }
+
+            string txt;
+            if (temp.Alert == 0)
+            {
+                txt = "Everything good Alert = 0";
+            }
+            else
+            {
+                txt = "predicting a significant (10 points) drop in SOFAS score (after 3 months): Alert = 1";
+            }
+            
+            return Json(txt);
+        }
+
+        [HttpPost]
+        public IActionResult PieChart(bool NEET, bool Selfharm, bool Psychosis, bool Medical, bool ChildDx, bool Circadian, int Tripartite, int ClinicalStage, int SOFAS)
+        {
+
+            var temp = _db.HealthData.FirstOrDefault(
+                a => a.Medical == Medical &&
+                a.ChildDx == ChildDx &&
+                a.Selfharm == Selfharm &&
+                a.Sofas == SOFAS &&
+                a.ClinicalStage == ClinicalStage &&
+                a.Circadian == Circadian &&
+                a.Tripartite == Tripartite &&
+                a.Psychosis == Psychosis &&
+                a.NEET == NEET);
+
+            if (temp == null)
+            {
+                ModelState.AddModelError("", "Error finding health data, returns null");
                 return RedirectToAction("Index");
             }
 
@@ -89,67 +113,118 @@ namespace BHFunctioning.Controllers
             List<object> chartData = new List<object>();
             chartData.Add(new object[]
                             {
-                            "Months", "SOFAS"
+                                "Cluster", "Probability"
+                            });
+
+
+            chartData.Add(new object[]
+                        {
+                                "Constant", temp.Constant
+                        });
+
+
+            chartData.Add(new object[]
+                        {
+                                "Up", temp.Up
+                        });
+            chartData.Add(new object[]
+                            {
+                                "Down", temp.Down
                             });
             chartData.Add(new object[]
                             {
-                            0, SOFAS
+                                "Alert", temp.Alert
+                            });
+            return Json(chartData);
+        }
+
+
+        [HttpPost]
+        public IActionResult FutureSofasGraph(bool NEET, bool Selfharm, bool Psychosis, bool Medical, bool ChildDx, bool Circadian, int Tripartite, int ClinicalStage, int SOFAS)
+        {
+
+            var temp = _db.HealthData.FirstOrDefault(
+                a => a.Medical == Medical &&
+                a.ChildDx == ChildDx &&
+                a.Selfharm == Selfharm &&
+                a.Sofas == SOFAS &&
+                a.ClinicalStage == ClinicalStage &&
+                a.Circadian == Circadian &&
+                a.Tripartite == Tripartite &&
+                a.Psychosis == Psychosis &&
+                a.NEET == NEET);
+
+            if (temp == null)
+            {
+                ModelState.AddModelError("", "Error finding health data, returns null");
+                return RedirectToAction("Index");
+            }
+
+            var id = temp.Id;
+            List<object> chartData = new List<object>();
+            chartData.Add(new object[]
+                            {
+                                "Months", "SOFAS"
+                            });
+            chartData.Add(new object[]
+                            {
+                                0, SOFAS
                             });
             HealthDataFuture DataList6 = _db.HealthDataFuture.SingleOrDefault(a => a.HealthDataFK == id && a.Month == 6);
             HealthDataFuture DataList12 = _db.HealthDataFuture.SingleOrDefault(a => a.HealthDataFK == id && a.Month == 12);
 
             if (DataList6 != null)
             {
-                
+
                 chartData.Add(new object[]
                             {
-                            6, DataList6.Sofas
+                                6, DataList6.Sofas
                             });
             }
             if (DataList12 != null)
             {
-              
+
                 chartData.Add(new object[]
                             {
-                            12, DataList12.Sofas
+                                12, DataList12.Sofas
                             });
             }
             return Json(chartData);
         }
 
-            // POST: DataVizController/Create
-            [HttpPost]
-            [ValidateAntiForgeryToken]
-            public async Task<ActionResult> Index(HealthData obj)
+        // POST: DataVizController/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Index(HealthData obj)
+        {
+
+            var tmp = _db.HealthData.FirstOrDefault(
+                a => a.Medical == obj.Medical &&
+                a.ChildDx == obj.ChildDx &&
+                a.Selfharm == obj.Selfharm &&
+                a.Sofas == obj.Sofas &&
+                a.ClinicalStage == obj.ClinicalStage &&
+                a.Circadian == obj.Circadian &&
+                a.Tripartite == obj.Tripartite &&
+                a.Psychosis == obj.Psychosis &&
+                a.NEET == obj.NEET);
+
+
+            if (tmp != null)
             {
-
-                var tmp = _db.HealthData.FirstOrDefault(
-                    a => a.Medical == obj.Medical &&
-                    a.ChildDx == obj.ChildDx &&
-                    a.Selfharm == obj.Selfharm &&
-                    a.Sofas == obj.Sofas &&
-                    a.ClinicalStage == obj.ClinicalStage &&
-                    a.Circadian == obj.Circadian &&
-                    a.Tripartite == obj.Tripartite &&
-                    a.Psychosis == obj.Psychosis &&
-                    a.NEET == obj.NEET);
-
-
-                if (tmp != null)
-                {
-                    TempData["id"] = tmp.Id;
-                    return View(obj);
-                }
-                try
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-                catch
-                {
-                    return View();
-                }
+                TempData["id"] = tmp.Id;
+                return View(obj);
             }
-
-
+            try
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
         }
+
+
     }
+}

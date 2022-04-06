@@ -4,7 +4,11 @@
     ViewData["Title"] = "Index";
     var idTemp = ViewData["id"];
 }
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js">
+    const { Alert } = require("../../wwwroot/lib/bootstrap/dist/js/bootstrap.bundle");
+
+    const { Alert } = require("../../wwwroot/lib/bootstrap/dist/js/bootstrap.bundle");
+</script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
 
@@ -44,19 +48,81 @@
         slid.innerHTML = SOFAS;
     })
 
+
+    function getAlert() {
+                    $.ajax({
+                        type: "POST",
+                        url: "/DataViz/GetAlert/?NEET="+NEET+"&Selfharm="+Selfharm+"&Psychosis="+Psychosis+"&Medical="+Medical+"&ChildDx="+ChildDx+"&Circadian="+Circadian+"&Tripartite="+Tripartite+"&ClinicalStage="+ClinicalStage+"&SOFAS="+SOFAS,
+                        data: {},
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (r) {
+                            var setTxt = document.getElementById("alertText");
+                                setTxt.innerHTML = String(r);
+                                console.log(r);
+
+                        },
+                        failure: function (r) {
+                            alert(r.d);
+                        },
+                        error: function (r) {
+                            alert(r.d);
+                        }
+                    });
+                }
+
+
+    function pieChart() {
+                    $.ajax({
+                        type: "POST",
+                        url: "/DataViz/PieChart/?NEET="+NEET+"&Selfharm="+Selfharm+"&Psychosis="+Psychosis+"&Medical="+Medical+"&ChildDx="+ChildDx+"&Circadian="+Circadian+"&Tripartite="+Tripartite+"&ClinicalStage="+ClinicalStage+"&SOFAS="+SOFAS,
+                        data: {},
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (r) {
+                            var data = google.visualization.arrayToDataTable(r);
+                            //graph options
+                            var options = {
+                                width: 800,
+                                height: 600,
+                                pieHole: 0.4,
+                                chart: {
+                                    title: 'Predicted cluster probabilities'
+                                },
+                                slices: {
+                                    0: { color: '#0000FF' },
+                                    1: { color: '#00FF00' },
+                                    2: { color: '#FF0000' }
+                                }
+                            };
+                            var chart = new google.visualization.PieChart(document.getElementById('chart_div2'));
+                            chart.draw(data, options);
+                        },
+                        failure: function (r) {
+                            alert(r.d);
+                        },
+                        error: function (r) {
+                            alert(r.d);
+                        }
+                    });
+                }
+
         $(document).ready(function () {
         var element = document.getElementById("graphData");
         element.onclick = function(event){
 
+                    document.getElementById('GraphOptions').style.display = "inline";
+
                     google.charts.load('current', {'packages':['corechart']});
-                    google.charts.setOnLoadCallback(drawChart2);
+                    google.charts.setOnLoadCallback(drawChart1);
+                    google.charts.setOnLoadCallback(pieChart);
                     ClinicalStage = document.getElementById('ClinicalStage').value;
                     Tripartite = document.getElementById('Tripartite').value;
-
-                    function drawChart2() {
+                    getAlert();
+                    function drawChart1() {
                         $.ajax({
                             type: "POST",
-                            url: "/DataViz/AjaxMethod/?NEET="+NEET+"&Selfharm="+Selfharm+"&Psychosis="+Psychosis+"&Medical="+Medical+"&ChildDx="+ChildDx+"&Circadian="+Circadian+"&Tripartite="+Tripartite+"&ClinicalStage="+ClinicalStage+"&SOFAS="+SOFAS,
+                            url: "/DataViz/FutureSofasGraph/?NEET="+NEET+"&Selfharm="+Selfharm+"&Psychosis="+Psychosis+"&Medical="+Medical+"&ChildDx="+ChildDx+"&Circadian="+Circadian+"&Tripartite="+Tripartite+"&ClinicalStage="+ClinicalStage+"&SOFAS="+SOFAS,
                             data: {},
                             contentType: "application/json; charset=utf-8",
                             dataType: "json",
@@ -66,7 +132,7 @@
                                 //graph options
                                 var options = {
                                     width: 800,
-                                    height: 650,
+                                    height: 600,
                                     chart: {
                                     title: 'SOFAS future prediction'
                                     },
@@ -91,12 +157,26 @@
                     }
             }
         });
+
+
     };
 </script>
-<form class="form-control-lg" method="post"> 
+<form class="form-control-lg" method="post">
     <button class="btn btn-primary" type="submit" asp-action="AddCSV">add CSV file to database</button>
-        <button class="btn btn-danger" asp-action="RemoveHealthData">Delete Health Data</button>
+    <button class="btn btn-danger" asp-action="RemoveHealthData">Delete Health Data</button>
 </form>
+
+<script>
+    function showGraph(graph){
+            var i;
+            var x = document.getElementsByClassName("graph");
+            for (i=0; i < x.length; i++){
+                x[i].style.display = "none";
+            }
+            document.getElementById(graph).style.display = "block";
+
+        }
+</script>
 
 <div class="container-fluid container">
     <div class="row">
@@ -107,7 +187,7 @@
                         <h2 class="text-primary">Enter inputs</h2>
                     </div>
                 </tr>
-                        
+
                 <tr>
                     <th>
                         <div>
@@ -264,8 +344,22 @@
             </table>
 
         </form>
-        <div class="col" id="chart_div" style="width:auto; height:auto">
-
+        <div class="col">
+            <div id="GraphOptions" class="btn-group" style="display:none;">
+                <button class="btn btn-primary" onclick="showGraph('graph1')">Graph 1</button>
+                <button class="btn btn-outline-secondary" onclick="showGraph('graph2')">Graph 2</button>
+                <button class="btn btn-outline-secondary" onclick="showGraph('graph3')">Graph 3</button>
+            </div>
+            <div class="align-content-center"><span id="alertText"></span></div>
+            <div class="graph justify-content-center" id="graph1">
+                <div id="chart_div" style="width:auto; height:auto"></div>
+            </div>
+            <div class="graph justify-content-center" style="display:none;" id="graph2">
+                <div id="chart_div2" style="width:auto; height:auto"></div>
+            </div>
+            <div class="graph justify-content-center" style="display:none;" id="graph3">
+                <div id="chart_div3" style="width:auto; height:auto"></div>
+            </div>
         </div>
     </div>
 </div>
