@@ -4,7 +4,8 @@ namespace BHFunctioning.Models
 {
     public class InputLog
     {
-        public string Id { get; set; }
+        [Key]
+        public int Id { get; set; }
         public string UserName { get; set; }
         public string IpAddress { get; set; }
         public DateTime DateTime { get; set; }

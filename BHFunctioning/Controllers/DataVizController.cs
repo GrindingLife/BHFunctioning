@@ -4,16 +4,20 @@ using BHFunctioning.Models;
 using BHFunctioning.Data;
 using BHFunctioning.Models;
 using System.Linq;
+using Microsoft.AspNetCore.Identity;
 
 namespace BHFunctioning.Controllers
 {
     public class DataVizController : Controller
     {
         private readonly ApplicationDbContext _db;
-        public DataVizController(ApplicationDbContext db)
+        private readonly UserManager<IdentityUser> _userManager;
+
+        public DataVizController(ApplicationDbContext db, UserManager<IdentityUser> userManager)
         {
             _db = db;
 
+            _userManager = userManager;
         }
         // GET: DataVizController
         public ActionResult Index()
@@ -74,6 +78,25 @@ namespace BHFunctioning.Controllers
                 ModelState.AddModelError("", "Error finding health data, returns null");
                 return RedirectToAction("Index");
             }
+
+            var ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+            InputLog userInput = new();
+            userInput.NEET = NEET;
+            userInput.Selfharm = Selfharm;
+            userInput.Psychosis = Psychosis;
+            userInput.Medical = Medical;
+            userInput.ChildDx = ChildDx;
+            userInput.Circadian = Circadian;
+            userInput.Tripartite = Tripartite;
+            userInput.ClinicalStage = ClinicalStage;
+            userInput.Sofas = SOFAS;
+            userInput.UserName = _userManager.GetUserName(User);
+            userInput.IpAddress = ip.ToString();
+            userInput.DateTime = DateTime.Now;
+
+            _db.InputLogs.Add(userInput);
+            _db.SaveChanges();
+
 
             string txt;
             if (temp.Alert == 0)
