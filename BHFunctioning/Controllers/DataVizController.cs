@@ -99,14 +99,11 @@ namespace BHFunctioning.Controllers
 
 
             string txt;
-            if (temp.Alert == 0)
-            {
-                txt = "Everything good Alert = 0";
-            }
-            else
+            if (temp.Alert == 1)
             {
                 txt = "predicting a significant (10 points) drop in SOFAS score (after 3 months): Alert = 1";
             }
+            else txt = "";
             
             return Json(txt);
         }
@@ -154,10 +151,7 @@ namespace BHFunctioning.Controllers
                             {
                                 "Down", temp.Down
                             });
-            chartData.Add(new object[]
-                            {
-                                "Alert", temp.Alert
-                            });
+            
             return Json(chartData);
         }
 

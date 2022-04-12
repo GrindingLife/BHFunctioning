@@ -60,6 +60,7 @@
                             var setTxt = document.getElementById("alertText");
                                 setTxt.innerHTML = String(r);
                                 console.log(r);
+                                setTxt.style.textAlign = "center";
 
                         },
                         failure: function (r) {
@@ -85,7 +86,6 @@
                             var options = {
                                 width: 800,
                                 height: 600,
-                                pieHole: 0.4,
                                 chart: {
                                     title: 'Predicted cluster probabilities'
                                 },
@@ -93,7 +93,10 @@
                                     0: { color: '#0000FF' },
                                     1: { color: '#00FF00' },
                                     2: { color: '#FF0000' }
-                                }
+                                },
+                                pieSliceTextStyle: {
+                                    color: 'black'
+                                  }
                             };
                             var chart = new google.visualization.PieChart(document.getElementById('chart_div2'));
                             chart.draw(data, options);
@@ -350,7 +353,6 @@
                 <button class="btn btn-outline-secondary" onclick="showGraph('graph2')">Graph 2</button>
                 <button class="btn btn-outline-secondary" onclick="showGraph('graph3')">Graph 3</button>
             </div>
-            <div class="align-content-center"><span id="alertText"></span></div>
             <div class="graph justify-content-center" id="graph1">
                 <div id="chart_div" style="width:auto; height:auto"></div>
             </div>
@@ -360,6 +362,7 @@
             <div class="graph justify-content-center" style="display:none;" id="graph3">
                 <div id="chart_div3" style="width:auto; height:auto"></div>
             </div>
+            <div class="text-center"><span id="alertText" class="text-danger text-center"></span></div>
         </div>
     </div>
 </div>
