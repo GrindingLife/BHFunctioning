@@ -3,6 +3,7 @@ using BHFunctioning.Data;
 using BHFunctioning.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,9 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.Sign
     .AddRoles<IdentityRole>()
     .AddDefaultUI()
     .AddDefaultTokenProviders();
+builder.Services.AddSingleton<IFileProvider>(
+            new PhysicalFileProvider(
+                Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

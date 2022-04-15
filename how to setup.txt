@@ -1,0 +1,8 @@
+Other option to download the files -
+Git Clone the project from https://github.com/GrindingLife/BHFunctioning.git in visual studio
+
+Changes before setup:
+change "DefaultConnection" string to your database connection string in file appsetings.json
+change stream reader file path in CsvRead.cs to path of the csv input_data file 
+add_migration to package manager console and update_database when migration is done
+

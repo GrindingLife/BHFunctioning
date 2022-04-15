@@ -25,38 +25,7 @@ namespace BHFunctioning.Controllers
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> RemoveHealthData()
-        {
-
-            List<HealthData> lis = new();
-            lis = _db.HealthData.ToList();
-            foreach (HealthData ele in lis)
-            {
-                _db.HealthData.Remove(ele);
-                await _db.SaveChangesAsync();
-            }
-
-            //List<HealthDataFuture> list = new();
-            //list = _db.HealthDataFuture.ToList();
-            //foreach (HealthDataFuture ele in list)
-            //{
-            //    _db.HealthDataFuture.Remove(ele);
-            //    await _db.SaveChangesAsync();
-            //}
-
-            return RedirectToAction(nameof(Index));
-
-        }
-
-        [HttpPost]
-        public ActionResult AddCSV()
-        {
-            CsvRead r = new();
-            r.readToDB(_db);
-            return RedirectToAction("Index");
-        }
+        
 
         [HttpPost]
         public IActionResult GetAlert(bool NEET, bool Selfharm, bool Psychosis, bool Medical, bool ChildDx, bool Circadian, int Tripartite, int ClinicalStage, int SOFAS)

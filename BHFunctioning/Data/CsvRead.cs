@@ -38,7 +38,7 @@ namespace BHFunctioning.Data
         public bool readToDB(ApplicationDbContext _db)
         {
             List<HealthData> res = new();
-            using (var streamReader = new StreamReader(@"C:\Users\billt\Desktop\input_data.csv"))
+            using (var streamReader = new StreamReader(@"input_data.csv"))
             {
                 using (var csvReader = new CsvReader(streamReader, CultureInfo.InvariantCulture))
                 {

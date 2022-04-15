@@ -1,0 +1,85 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+
+<script>
+   
+
+
+        var ConfirmDelete = function () {
+
+            $("#myModal").modal('show');
+
+        }
+
+        
+    
+</script>
+
+
+    <div>
+        <h1 class="card-header">Data Management</h1>
+        <table class="table table-borderless table-primary">
+            <tr>
+                <td>
+                    <p class=""> Download all user input records from database</p>
+                </td>
+                <td>
+                    <a asp-action="Download" class="btn w-100 btn-primary">Download file</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Clear User input records from the database</p>
+                </td>
+                <td>
+                    <button onclick="ConfirmDelete()" class="btn btn-danger w-100">Clear Logs</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Initiate Healthdata Database with data</p>
+                </td>
+                <td>
+                    <a class="btn btn-primary w-100" type="submit" asp-action="AddCSV">add CSV file to database</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Clear HealthData entries from database</p>
+                </td>
+                <td>
+                   <a class="btn btn-danger w-100" asp-action="RemoveHealthData">Delete Health Data</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+
+
+
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a asp-action="Index" class="close" data-dismiss="modal">X</a>
+                    <h3 class="modal-title">Clear Logs</h3>
+                </div>
+                <div class="modal-body">
+                    <h4>Are you sure you want to Clear Logs?</h4>
+
+                  
+
+                </div>
+                <div class="modal-footer">
+                    <a asp-action="Index" class="btn btn-default">Cancel</a>
+                    <a asp-action="ClearLogs" class="btn btn-danger">Confirm</a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+}
