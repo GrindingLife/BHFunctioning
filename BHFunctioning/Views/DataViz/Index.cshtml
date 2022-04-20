@@ -84,7 +84,7 @@
                             var data = google.visualization.arrayToDataTable(r);
                             //graph options
                             var options = {
-                                width: 800,
+                                width: 350,
                                 height: 600,
                                 chart: {
                                     title: 'Predicted cluster probabilities'
@@ -93,10 +93,8 @@
                                     0: { color: '#0000FF' },
                                     1: { color: '#00FF00' },
                                     2: { color: '#FF0000' }
-                                },
-                                pieSliceTextStyle: {
-                                    color: 'black'
-                                  }
+                                }
+
                             };
                             var chart = new google.visualization.PieChart(document.getElementById('chart_div2'));
                             chart.draw(data, options);
@@ -134,18 +132,23 @@
 
                                 //graph options
                                 var options = {
-                                    width: 800,
-                                    height: 600,
+                                    width: 550,
+                                    height: 550,
                                     chart: {
-                                    title: 'SOFAS future prediction'
+                                    title: 'SOFAS predicted trajectories'
                                     },
-                                    hAxis: {title: 'Months'},
+                                    hAxis: {title: 'Time: Months'},
                                     vAxis: {title: 'SOFAS score',
                                     viewWindow:{
                                         min:0,
-                                        max:10
+                                        max:100
                                         }
-                                    }
+                                    },
+                                    series: {
+                                    0: { color: '#0000FF' },
+                                    1: { color: '#FF0000', lineDashStyle: [4, 4] },
+                                    2: { color: '#00FF00', lineDashStyle: [4, 4] }
+                                  }
                                 };
                                 var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
                                 chart.draw(data, options);
@@ -177,9 +180,9 @@
         }
 </script>
 
-<div class="container-fluid container">
+<div class="container container-fluid">
     <div class="row">
-        <form class="col-xs-6 col form-control-color">
+        <form class=" col form-control-color">
             <table class="table">
                 <tr class="row">
                     <div class="row pb-2">
@@ -341,24 +344,22 @@
                 </tr>
 
             </table>
-
+            
         </form>
+        <div class="graph justify-content-center col" id="graph1">
+            <div id="chart_div" style="width:auto; height:auto"></div>
+        </div>
+        <div class="graph justify-content-center col" id="graph2">
+            <div id="chart_div2" style="width:auto; height:auto"></div>
+        </div>
+        <div class="text-center"><span id="alertText" class="text-danger text-center"></span></div>
         <div class="col">
             <div id="GraphOptions" class="btn-group" style="display:none;">
-                <button class="btn btn-primary" onclick="showGraph('graph1')">Graph 1</button>
+                @*<button class="btn btn-primary" onclick="showGraph('graph1')">Graph 1</button>
                 <button class="btn btn-outline-secondary" onclick="showGraph('graph2')">Graph 2</button>
-                <button class="btn btn-outline-secondary" onclick="showGraph('graph3')">Graph 3</button>
+                <button class="btn btn-outline-secondary" onclick="showGraph('graph3')">Graph 3</button>*@
             </div>
-            <div class="graph justify-content-center" id="graph1">
-                <div id="chart_div" style="width:auto; height:auto"></div>
-            </div>
-            <div class="graph justify-content-center" style="display:none;" id="graph2">
-                <div id="chart_div2" style="width:auto; height:auto"></div>
-            </div>
-            <div class="graph justify-content-center" style="display:none;" id="graph3">
-                <div id="chart_div3" style="width:auto; height:auto"></div>
-            </div>
-            <div class="text-center"><span id="alertText" class="text-danger text-center"></span></div>
+
         </div>
     </div>
 </div>

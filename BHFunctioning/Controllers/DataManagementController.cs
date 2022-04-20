@@ -1,10 +1,12 @@
 ﻿using BHFunctioning.Data;
 using BHFunctioning.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BHFunctioning.Controllers
 {
+    [Authorize(Roles = "Administrator")]
     public class DataManagementController : Controller
     {
         private readonly ApplicationDbContext _db;

@@ -5,9 +5,11 @@ using BHFunctioning.Data;
 using BHFunctioning.Models;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BHFunctioning.Controllers
 {
+    [Authorize]
     public class DataVizController : Controller
     {
         private readonly ApplicationDbContext _db;
@@ -150,30 +152,20 @@ namespace BHFunctioning.Controllers
             List<object> chartData = new List<object>();
             chartData.Add(new object[]
                             {
-                                "Months", "SOFAS"
+                                "Months", "Mean", "- Std. Deviation", "+ Std. Deviation"
                             });
             chartData.Add(new object[]
                             {
-                                0, SOFAS
+                                0, SOFAS*10, SOFAS*10, SOFAS*10
                             });
-            HealthDataFuture DataList6 = _db.HealthDataFuture.SingleOrDefault(a => a.HealthDataFK == id && a.Month == 6);
-            HealthDataFuture DataList12 = _db.HealthDataFuture.SingleOrDefault(a => a.HealthDataFK == id && a.Month == 12);
 
-            if (DataList6 != null)
+            if (temp != null)
             {
-
                 chartData.Add(new object[]
                             {
-                                6, DataList6.Sofas
+                                3, temp.Mean, (temp.Mean - temp.StandardDeviation), (temp.Mean + temp.StandardDeviation)
                             });
-            }
-            if (DataList12 != null)
-            {
 
-                chartData.Add(new object[]
-                            {
-                                12, DataList12.Sofas
-                            });
             }
             return Json(chartData);
         }

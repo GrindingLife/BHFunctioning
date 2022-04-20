@@ -2,7 +2,17 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
+<div class="text-body">
     <h1 class="display-4">Welcome</h1>
-    <p>Welcome to Better Health Functioning decision support tool, to get started using the tool press <a class="text-decoration-none" asp-controller="DataViz" asp-action="Index">Home</a>.</p>
+    <p class="text-primary">Welcome to Better Health Functioning decision support tool, to get started using the tool press <a class="text-decoration-none link-dark" asp-controller="DataViz" asp-action="Index">Home</a>.</p>
+    <h2 class="display-6">Context:</h2>
+    <p> Youth mental health is characterised by a heterogenous pattern of illness which tends to oscillate between health and disorder as a function of vulnerability, protective and treatment factors. In clinical practice this makes predicting an individual’s trajectory challenging, particularly at entry into care, and limits the accuracy and appropriateness of allocating the right type and intensity of treatments which could mitigate poor clinical and functional outcomes. This study aimed to develop a probabilistic prediction model which combines an individual’s demographic and clinical information at entry into services to determine their most likely social and occupational functional impairment trajectory over the next 3 months.</p>
+    <h2 class="display-6">Methods:</h2>
+    <p>The sample include 718 young people aged between 12 and 25 who had at least one follow-up visit within 3 months of entering youth mental health care. A Bayesian random effects model was designed, where the coefficients of a linear regression model have a probability distribution which is conditioned on a categorical cluster variable describing the change trajectory (i.e., improvement, deterioration or constant).  We applied Bayesian inference via Markov chain Monte Carlo (MCMC) using the no-U-turn sampler (NUTS) for continuous random variables combined with a Gibbs sampling scheme to sample the discrete random variables. We considered different choices of covariates for the random effects model, which were evaluated via the Watanabe-Akaike information criterion and evaluated the model’s predictive performance on held-out test data via 5- fold cross-validation.</p>
+    <h2 class="display-6">Results:</h2>
+    <p>Of the 30 variables available, a subset of 8 was identified as the optimal set for prediction, and included: not in employment, education or training status, self-harm, psychotic-like experiences, physical health comorbidity, childhood development, illness type, clinical stage, and circadian disturbances. The probabilistic clinical prediction tool was internally validated and predicted functional impairment trajectory at 3 months with an area under the curve of 0.70 (SD = 0.1). Self-harm and physical health comorbidity were found to be strong predictors for a deteriorating trajectory.</p>
+    <h2 class="display-6">Conclusions:</h2>
+    <p>CWe have developed and validated a brief probabilistic clinical prediction tool for use in youth mental health settings which can be used to determine functional impairment trajectories over the first three months of care.</p>
+    <h2 class="display-6">Implications:</h2>
+    <p>The use of this model in clinical practice has the potential to guide clinical decision-making by assigning probabilities to the range of potential functional impairment trajectories. This type of individual-level prediction (and associated uncertainty regarding predicted outcomes) could enhance the decision about type and intensity of assessment and treatment needed for early intervention.</p>
 </div>
