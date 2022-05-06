@@ -11,23 +11,23 @@
 
 @if (Model.Any())
 {
-    <table class="table col-3">
+    <table class="table table-borderless col-3">
         <thead>
             <tr>
                 <td><h5>Role</h5></td>
                 <td></td>
             </tr>
         </thead>
+        
         @foreach (var role in Model)
         {
             <tbody>
                 <tr>
                     <td>@role.Name</td>
-                    <td class="text-center">
+                    <td class="text-center">                    
                         <a asp-action="EditRole" asp-route-id="@role.Id" class="btn btn-primary btn-sm">Edit</a>
                         <a asp-action="DeleteRole" asp-route-id="@role.Id" class="btn btn-danger btn-sm">Delete</a>
-                        @*<a asp-action="AssignRole" asp-route-id="@role.Id" class="btn btn-secondary btn-sm">Assign Role</a>*@
-
+                        @*<a asp-action="AssignRole" asp-route-id="@role.Id" class="btn btn-secondary btn-sm">Assign Role</a>*@                      
                     </td>
                 </tr>
             </tbody>

@@ -6,7 +6,6 @@ using System.Diagnostics;
 
 namespace BHFunctioning.Controllers
 {
-    [Authorize]
     public class HomeController : Controller
     {
         private const string RoleName = "Administrator";
@@ -20,14 +19,6 @@ namespace BHFunctioning.Controllers
             _logger = logger;
         }
 
-        private async Task<bool> RoleExistsAsync(string role)
-        {
-            if (await _roleManager.RoleExistsAsync(role))
-                return true;
-
-            else
-                return false;
-        }
 
         public IActionResult Index()
         {
