@@ -18,8 +18,6 @@ namespace BHFunctioning.Controllers
             _roleManager = roleManager;
             _db = db;
             _userManager = userManager;
-            
-
         } 
 
         //Main page of role management, displays all roles

@@ -3,7 +3,6 @@ using BHFunctioning.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-
 namespace BHFunctioning.Controllers
 {
     [Authorize(Roles = "Administrator")]
@@ -45,10 +44,46 @@ namespace BHFunctioning.Controllers
 
         }
 
+        [HttpPost("FileUpload")]
+        public async Task<IActionResult> FileUpload(IFormFile file)
+        {
+          
+
+            var filePaths = new List<string>();
+
+            if (file.Length > 0 && file.Length < 1097152)
+            {
+                // full path to file in temp location
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "input_data.csv");
+                filePaths.Add(filePath);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("File", "The file is too large.");
+            }
+
+            // process uploaded files
+            // Don't rely on or trust the FileName property without validation.
+            return View("Index");
+        }
+
         public ActionResult AddCSV()
         {
-            CsvRead r = new();
-            r.readToDB(_db);
+
+            if (!_db.HealthData.Any())
+            {
+                CsvRead r = new();
+                r.readToDB(_db);
+            }
+            else
+            {
+                ModelState.AddModelError("","Data is already in the database");
+            }
+            
             return View("Index");
         }
 

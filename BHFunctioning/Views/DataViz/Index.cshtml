@@ -43,9 +43,7 @@
         Circadian = ev.currentTarget.attributes.value.value;
     })
      $("input[name='Sofas']").click((ev) => {
-        SOFAS = document.getElementById('Sofas').value;
-        var slid = document.getElementById('slider');
-        slid.innerHTML = SOFAS;
+        SOFAS = ev.currentTarget.attributes.value.value;
     })
 
 
@@ -58,10 +56,11 @@
                         dataType: "json",
                         success: function (r) {
                             var setTxt = document.getElementById("alertText");
+                                
                                 setTxt.innerHTML = String(r);
                                 console.log(r);
                                 setTxt.style.textAlign = "center";
-
+                                setTxt.style.fontSize = "25px";
                         },
                         failure: function (r) {
                             alert(r.d);
@@ -84,11 +83,12 @@
                             var data = google.visualization.arrayToDataTable(r);
                             //graph options
                             var options = {
-                                width: 350,
-                                height: 600,
-                                chart: {
-                                    title: 'Predicted cluster probabilities'
-                                },
+                                'legend':'left',
+                                width: 650,
+                                height: 650,
+                           
+                                title: 'Predicted functional change category',
+                            
                                 slices: {
                                     0: { color: '#0000FF' },
                                     1: { color: '#00FF00' },
@@ -132,11 +132,9 @@
 
                                 //graph options
                                 var options = {
-                                    width: 550,
-                                    height: 550,
-                                    chart: {
-                                    title: 'SOFAS predicted trajectories'
-                                    },
+                                    width: 650,
+                                    height: 650,
+                                    title: 'Predicted functional trajectory',
                                     hAxis: {title: 'Time: Months'},
                                     vAxis: {title: 'SOFAS score',
                                     viewWindow:{
@@ -145,9 +143,9 @@
                                         }
                                     },
                                     series: {
-                                    0: { color: '#0000FF' },
-                                    1: { color: '#FF0000', lineDashStyle: [4, 4] },
-                                    2: { color: '#00FF00', lineDashStyle: [4, 4] }
+                                    0: { color: 'Black' },
+                                    1: { color: 'Orange', lineDashStyle: [4, 4] },
+                                    2: { color: 'Orange', lineDashStyle: [4, 4] }
                                   }
                                 };
                                 var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
@@ -180,10 +178,10 @@
         }
 </script>
 
-<div class="container container-fluid">
+<div class="m-4">
     <div class="row">
-        <form class=" col form-control-color">
-            <table class="table">
+        <form class=" col">
+            <table class="table form-control"> 
                 <tr class="row">
                     <div class="row pb-2">
                         <h2 class="text-primary">Enter inputs</h2>
@@ -212,7 +210,7 @@
                             <input class="form-check-input" value="True" asp-for="NEET" type="radio" name="NEET" id="neet1" />
                             <label class="form-check-label" for="neet1">True</label>
 
-                            <input class="form-check-input" value="False" asp-for="NEET" type="radio" name="NEET" id="neet0" />
+                            <input class="form-check-input" checked="checked" value="False" asp-for="NEET" type="radio" name="NEET" id="neet0" />
                             <label class="form-check-label" for="neet0">False</label>
                         </div>
                     </td>
@@ -227,7 +225,7 @@
                             <input class="form-check-input" value="True" asp-for="ChildDx" type="radio" name="ChildDx" id="childdx1" />
                             <label class="form-check-label" for="childdx1">True</label>
 
-                            <input class="form-check-input" value="False" asp-for="ChildDx" type="radio" name="ChildDx" id="childdx0" />
+                            <input class="form-check-input" checked="checked" value="False" asp-for="ChildDx" type="radio" name="ChildDx" id="childdx0" />
                             <label class="form-check-label" for="childdx0">False</label>
                         </div>
                     </td>
@@ -240,10 +238,10 @@
                     <td class="d-table-cell p-1">
                         <div>
                             <input class="form-check-input" value="True" asp-for="Selfharm" type="radio" name="Selfharm" id="selfharm1" />
-                            <label class="form-check-label" for="selfharm0">True</label>
+                            <label class="form-check-label" for="selfharm1">True</label>
 
-                            <input class="form-check-input" value="False" asp-for="Selfharm" type="radio" name="Selfharm" id="selfharm0" />
-                            <label class="form-check-label" for="selfharm1">False</label>
+                            <input class="form-check-input" checked="checked" value="False" asp-for="Selfharm" type="radio" name="Selfharm" id="selfharm0" />
+                            <label class="form-check-label" for="selfharm0">False</label>
                         </div>
                     </td>
                 </tr>
@@ -256,16 +254,16 @@
 
                         <div>
                             <input class="form-check-input" value="True" asp-for="Psychosis" type="radio" name="Psychosis" id="Psychosis1" />
-                            <label class="form-check-label" for="Psychosis0">True</label>
+                            <label class="form-check-label" for="Psychosis1">True</label>
 
-                            <input class="form-check-input" value="False" asp-for="Psychosis" type="radio" name="Psychosis" id="Psychosis0" />
-                            <label class="form-check-label" for="Psychosis1">False</label>
+                            <input class="form-check-input" checked="checked" value="False" asp-for="Psychosis" type="radio" name="Psychosis" id="Psychosis0" />
+                            <label class="form-check-label" for="Psychosis0">False</label>
                         </div>
                     </td>
                 </tr>
                 <tr>
                     <td class="d-table-cell p-1">
-                        <label asp-for="Medical"></label>
+                        <label asp-for="Medical" ></label>
                         <span asp-validation-for="Medical" class="text-danger"></span>
                     </td>
                     <td class="d-table-cell p-1">
@@ -274,7 +272,7 @@
                             <input class="form-check-input" value="True" asp-for="Medical" type="radio" name="Medical" id="Medical1" />
                             <label class="form-check-label" for="Medical1">True</label>
 
-                            <input class="form-check-input" value="False" asp-for="Medical" type="radio" name="Medical" id="Medical0" />
+                            <input class="form-check-input" checked="checked" value="False" asp-for="Medical" type="radio" name="Medical" id="Medical0" />
                             <label class="form-check-label" for="Medical0">False</label>
                         </div>
                     </td>
@@ -290,7 +288,7 @@
                             <input class="form-check-input " value="True" asp-for="Circadian" type="radio" name="Circadian" id="Circadian1" />
                             <label class="form-check-label" for="Circadian1">True</label>
 
-                            <input class="form-check-input" value="False" asp-for="Circadian" type="radio" name="Circadian" id="Circadian0" />
+                            <input class="form-check-input" checked="checked" value="False" asp-for="Circadian" type="radio" name="Circadian" id="Circadian0" />
                             <label class="form-check-label" for="Circadian0">False</label>
                         </div>
                     </td>
@@ -303,10 +301,10 @@
                     <td class="d-table-cell p-1">
                         <div class="">
                             <select asp-for="Tripartite" class="dropdown dropdown-header dropdown-item-text dropdown-toggle" name="Tripartite" id="Tripartite">
-                                <option class="dropdown-item" value="0">False mood disorder</option>
-                                <option class="dropdown-item" value="1">Manic fatigue</option>
-                                <option class="dropdown-item" value="2">Developmental psychosis</option>
-                                <option class="dropdown-item" value="3">Anxious depression</option>
+                                <option class="dropdown-item" value="0">No mood disorder</option>
+                                <option class="dropdown-item" value="1">Manic-fatigue</option>
+                                <option class="dropdown-item" value="2">Developmental-psychosis</option>
+                                <option class="dropdown-item" value="3">Anxious-depression</option>
                             </select>
                         </div>
                     </td>
@@ -320,7 +318,7 @@
                         <select asp-for="ClinicalStage" class="dropdown dropdown-header dropdown-item-text dropdown-toggle" name="ClinicalStage" id="ClinicalStage">
                             <option class="dropdown-item" value="0">Stage 1a</option>
                             <option class="dropdown-item" value="1">Stage 1b</option>
-                            <option class="dropdown-item" value="2">Stage 2a+</option>
+                            <option class="dropdown-item" value="2">Stage 2+</option>
                         </select>
 
                     </td>
@@ -331,9 +329,16 @@
                         <span asp-validation-for="Sofas" class="text-danger"></span>
                     </td>
                     <td class="d-table-cell p-1">
-                        <div class="btn-group input-group mb-2 mr-sm-2" role="group" aria-label="Basic example">
-                            <span id="slider" class="p-1">0</span><input value="0" min="0" max="4" id="Sofas" asp-for="Sofas" type="range" name="Sofas" class="" />
-                        </div>
+                        <select asp-for="Sofas" class="dropdown dropdown-header dropdown-item-text dropdown-toggle" name="Sofas" id="Sofas">
+                           
+                            <option class="dropdown-item" value="4">4</option>
+                            <option class="dropdown-item" value="5">5</option>
+                            <option class="dropdown-item" value="6">6</option>
+                            <option class="dropdown-item" value="7">7</option>
+                            <option class="dropdown-item" value="8">8</option>
+                            <option class="dropdown-item" value="9">9</option>
+                        </select>
+                        
                     </td>
                 </tr>
                 <tr>

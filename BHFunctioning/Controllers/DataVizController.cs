@@ -27,8 +27,8 @@ namespace BHFunctioning.Controllers
             return View();
         }
 
-        
 
+        
         [HttpPost]
         public IActionResult GetAlert(bool NEET, bool Selfharm, bool Psychosis, bool Medical, bool ChildDx, bool Circadian, int Tripartite, int ClinicalStage, int SOFAS)
         {
@@ -72,7 +72,7 @@ namespace BHFunctioning.Controllers
             string txt;
             if (temp.Alert == 1)
             {
-                txt = "predicting a significant (10 points) drop in SOFAS score (after 3 months): Alert = 1";
+                txt = "Alert! Predicting a significant (10 points) drop in SOFAS score (after 3 months) ";
             }
             else txt = "";
             
@@ -107,7 +107,6 @@ namespace BHFunctioning.Controllers
                                 "Cluster", "Probability"
                             });
 
-
             chartData.Add(new object[]
                         {
                                 "Constant", temp.Constant
@@ -116,11 +115,11 @@ namespace BHFunctioning.Controllers
 
             chartData.Add(new object[]
                         {
-                                "Up", temp.Up
+                                "Improvement", temp.Up
                         });
             chartData.Add(new object[]
                             {
-                                "Down", temp.Down
+                                "Deterioration", temp.Down
                             });
             
             return Json(chartData);
@@ -156,7 +155,7 @@ namespace BHFunctioning.Controllers
                             });
             chartData.Add(new object[]
                             {
-                                0, SOFAS*10, SOFAS*10, SOFAS*10
+                                0, SOFAS*10+5, SOFAS*10+5, SOFAS*10+5
                             });
 
             if (temp != null)

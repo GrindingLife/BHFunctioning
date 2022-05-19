@@ -2,7 +2,7 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-
+    
     <script>
 
 
@@ -12,7 +12,16 @@
             $("#myModal").modal('show');
 
         }
+        var ConfirmDeleteHealth = function () {
 
+            $("#myModalHealthData").modal('show');
+
+        }
+        var upload = function () {
+
+            $("#myModalUpload").modal('show');
+
+        }
 
 
     </script>
@@ -20,10 +29,11 @@
 
     <div>
         <h1 class="card-header">Data Management</h1>
+
         <table class="table table-borderless table-primary">
             <tr>
                 <td>
-                    <p class=""> Download all user input records from database</p>
+                    <p class=""> Download User Input Records</p>
                 </td>
                 <td>
                     <a asp-action="Download" class="btn w-100 btn-primary">Download file</a>
@@ -31,7 +41,7 @@
             </tr>
             <tr>
                 <td>
-                    <p>Clear User input records from the database</p>
+                    <p>Clear User Input Records</p>
                 </td>
                 <td>
                     <button onclick="ConfirmDelete()" class="btn btn-danger w-100">Clear Logs</button>
@@ -39,24 +49,82 @@
             </tr>
             <tr>
                 <td>
-                    <p>Initiate Healthdata Database with data</p>
+                    <p>Initiate Healthdata Database with CSV</p>
                 </td>
                 <td>
-                    <a class="btn btn-primary w-100" type="submit" asp-action="AddCSV">add CSV file to database</a>
+                    <a class="btn btn-primary w-100" type="submit" asp-action="AddCSV">Initiate</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <p>Clear HealthData entries from database</p>
+                    <p>Clear Database CSV</p>
                 </td>
                 <td>
-                    <a class="btn btn-danger w-100" asp-action="RemoveHealthData">Delete Health Data</a>
+                    <button onclick="ConfirmDeleteHealth()" class="btn btn-danger w-100">Delete</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Upload Database CSV</p>
+                </td>
+                <td>
+                    <button onclick="upload()" class="btn btn-primary w-100">Upload</button>
                 </td>
             </tr>
         </table>
     </div>
 
+    <div class="modal fade" id="myModalUpload">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a asp-action="Index" class="close" data-dismiss="modal">X</a>
+                    <h3 class="modal-title">Upload Database csv file</h3>
+                </div>
+                    <h2>UploadFile</h2>
+                    <form method="post" class="form-control" enctype="multipart/form-data" asp-controller="FileUpload" asp-action="Index">
+                        <div class="form-group">
+                            <div class="col-md-10">
+                                <p>Upload csv database file:</p>
+                                <input type="file" name="files" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-10">
+                                <input type="submit" value="Upload" />
+                            </div>
+                        </div>
+                    </form>
+                <div class="modal-footer">
+                    <a asp-action="Index" class="btn btn-default">Cancel</a>
+                </div>
 
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="myModalHealthData">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a asp-action="Index" class="close" data-dismiss="modal">X</a>
+                    <h3 class="modal-title">Clear Health Data</h3>
+                </div>
+                <div class="modal-body">
+                    <h4>Are you sure you want to clear Health data entries?</h4>
+                </div>
+                <div class="modal-footer">
+                    <a asp-action="Index" class="btn btn-default">Cancel</a>
+                    <a asp-action="RemoveHealthData" class="btn btn-danger">Confirm</a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 
     <div class="modal fade" id="myModal">

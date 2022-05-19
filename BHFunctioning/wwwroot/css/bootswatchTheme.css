@@ -92,6 +92,69 @@ body {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
+.cta {
+    position: relative;
+    margin: auto;
+    padding: 12px 18px;
+    transition: all 0.2s ease;
+    border: none;
+    background: none;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    .cta:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: block;
+        border-radius: 40px;
+        background: #b1dae6;
+        width: 45px;
+        height: 45px;
+        transition: all 0.3s ease;
+    }
+
+    .cta span {
+        position: relative;
+        font-family: "Ubuntu", sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        color: #234567;
+    }
+
+    .cta svg {
+        position: relative;
+        top: 0;
+        margin-left: 10px;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke: #234567;
+        stroke-width: 2;
+        transform: translateX(-5px);
+        transition: all 0.3s ease;
+    }
+
+    .cta:hover:before {
+        width: 100%;
+        background: #b1dae7;
+    }
+
+    .cta:hover svg {
+        transform: translateX(0);
+    }
+
+    .cta:active {
+        transform: scale(0.95);
+    }
+
 hr {
     margin: 1rem 0;
     color: inherit;
@@ -3380,6 +3443,43 @@ fieldset:disabled .btn {
         color: #fff;
         background-color: #3fb618;
         border-color: #3fb618;
+    }
+
+
+.check-box-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.custom-checkbox {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+}
+
+    .custom-checkbox .label {
+        font-size: 1.2em;
+        margin: 0 10px;
+    }
+
+    .custom-checkbox .checkmark {
+        width: 35px;
+        height: 35px;
+        border: 2px solid #222;
+        display: inline-block;
+        border-radius: 3px;
+        background: #222 url(https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/White_check.svg/1200px-White_check.svg.png) center/1250% no-repeat;
+        transition: background-size 0.2s ease;
+    }
+
+    .custom-checkbox input:checked + .checkmark {
+        background-size: 60%;
+        transition: background-size 0.25s cubic-bezier(0.7, 0, 0.18, 1.24);
+    }
+
+    .custom-checkbox input {
+        display: none;
     }
 
 .btn-info {

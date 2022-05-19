@@ -41,7 +41,7 @@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="DataViz" asp-action="Index">Tool</a>
+                                <a class="nav-link text-dark" class="" asp-controller="DataViz" asp-action="Index">Tool</a>
                             </li>
                             @if (User.IsInRole("Administrator"))
                             {
@@ -62,7 +62,7 @@
             </div>
         </nav>
     </header>
-    <div class="container g-0">
+    <div container-fluid>
         <main role="main" class="pb-3">
 
             @RenderBody()

@@ -3,8 +3,18 @@
 }
 
 <div class="text-body">
-    <h1 class="display-4">Welcome</h1>
-    <p class="text-primary">Welcome to Better Health Functioning decision support tool, to get started using the tool press <a class="text-decoration-none link-dark" asp-controller="DataViz" asp-action="Index">Start</a>.</p>
+    <h1 class="display-4 text-center">Youth Outcomes Decision Aid (YODA)</h1>
+
+        <p class="text-primary text-center">Welcome to Youth Outcomes Decision Aid, to get started using the tool press. </p>
+        <div class="align-items-center">
+            <button style="" type="button" value="Start" class="cta center" onclick="location.href='@Url.Action("Index", "DataViz")'">
+                <span>Start</span>
+                <svg viewBox="0 0 13 10" height="10px" width="15px">
+                    <path d="M1,5 L11,5"></path>
+                    <polyline points="8 1 12 5 8 9"></polyline>
+                </svg>
+            </button>
+        </div>
     <h2 class="display-6">Context:</h2>
     <p> Youth mental health is characterised by a heterogenous pattern of illness which tends to oscillate between health and disorder as a function of vulnerability, protective and treatment factors. In clinical practice this makes predicting an individual’s trajectory challenging, particularly at entry into care, and limits the accuracy and appropriateness of allocating the right type and intensity of treatments which could mitigate poor clinical and functional outcomes. This study aimed to develop a probabilistic prediction model which combines an individual’s demographic and clinical information at entry into services to determine their most likely social and occupational functional impairment trajectory over the next 3 months.</p>
     <h2 class="display-6">Methods:</h2>
@@ -12,7 +22,7 @@
     <h2 class="display-6">Results:</h2>
     <p>Of the 30 variables available, a subset of 8 was identified as the optimal set for prediction, and included: not in employment, education or training status, self-harm, psychotic-like experiences, physical health comorbidity, childhood development, illness type, clinical stage, and circadian disturbances. The probabilistic clinical prediction tool was internally validated and predicted functional impairment trajectory at 3 months with an area under the curve of 0.70 (SD = 0.1). Self-harm and physical health comorbidity were found to be strong predictors for a deteriorating trajectory.</p>
     <h2 class="display-6">Conclusions:</h2>
-    <p>CWe have developed and validated a brief probabilistic clinical prediction tool for use in youth mental health settings which can be used to determine functional impairment trajectories over the first three months of care.</p>
+    <p>We have developed and validated a brief probabilistic clinical prediction tool for use in youth mental health settings which can be used to determine functional impairment trajectories over the first three months of care.</p>
     <h2 class="display-6">Implications:</h2>
     <p>The use of this model in clinical practice has the potential to guide clinical decision-making by assigning probabilities to the range of potential functional impairment trajectories. This type of individual-level prediction (and associated uncertainty regarding predicted outcomes) could enhance the decision about type and intensity of assessment and treatment needed for early intervention.</p>
 </div>
