@@ -49,7 +49,7 @@
             </tr>
             <tr>
                 <td>
-                    <p>Initiate Healthdata Database with CSV</p>
+                    <p>Initiate Database with CSV</p>
                 </td>
                 <td>
                     <a class="btn btn-primary w-100" type="submit" asp-action="AddCSV">Initiate</a>
@@ -81,20 +81,22 @@
                     <a asp-action="Index" class="close" data-dismiss="modal">X</a>
                     <h3 class="modal-title">Upload Database csv file</h3>
                 </div>
-                    <h2>UploadFile</h2>
-                    <form method="post" class="form-control" enctype="multipart/form-data" asp-controller="FileUpload" asp-action="Index">
-                        <div class="form-group">
+                    <h2 class="m-2">UploadFile</h2>
+                    <p class="m-3">Make sure csv column uses the following names as headers: id, NEET, Selfharm, Psychosis, Medical, ChildDx, Circadian, Tripartite, ClinicalStage, Sofas, Alert, Constant, Up, Down, Mean, StandardDeviation</p>
+                    <form method="post" class="form-control" enctype="multipart/form-data" asp-controller="DataManagement" asp-action="FileUpload">
+                        <div class="form-group p-1">
                             <div class="col-md-10">
-                                <p>Upload csv database file:</p>
-                                <input type="file" name="files" />
+                                <p>Upload csv database file: </p>
+                                <input type="file" class="btn btn-primary" name="files" accept=".csv" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-md-10">
-                                <input type="submit" value="Upload" />
+                            <div class="col-md-10 p-1">
+                                <input type="submit" class="btn btn-primary " value="Upload" />
                             </div>
                         </div>
                     </form>
+
                 <div class="modal-footer">
                     <a asp-action="Index" class="btn btn-default">Cancel</a>
                 </div>

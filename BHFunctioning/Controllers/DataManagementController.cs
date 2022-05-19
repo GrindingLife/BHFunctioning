@@ -44,26 +44,26 @@ namespace BHFunctioning.Controllers
 
         }
 
-        [HttpPost("FileUpload")]
-        public async Task<IActionResult> FileUpload(IFormFile file)
+        [HttpPost]
+        public async Task<IActionResult> FileUpload(List<IFormFile> files)
         {
-          
 
-            var filePaths = new List<string>();
 
-            if (file.Length > 0 && file.Length < 1097152)
+            string path = Path.Combine(Directory.GetCurrentDirectory());
+            if (!Directory.Exists(path))
             {
-                // full path to file in temp location
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "input_data.csv");
-                filePaths.Add(filePath);
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
+                Directory.CreateDirectory(path);
             }
-            else
+
+            List<string> uploadedFiles = new List<string>();
+            foreach (IFormFile postedFile in files)
             {
-                ModelState.AddModelError("File", "The file is too large.");
+                string fileName = Path.GetFileName(postedFile.FileName);
+                using (FileStream stream = new FileStream(Path.Combine(path, "input_data.csv"), FileMode.Create))
+                {
+                    postedFile.CopyTo(stream);
+                    uploadedFiles.Add(fileName);
+                }
             }
 
             // process uploaded files
