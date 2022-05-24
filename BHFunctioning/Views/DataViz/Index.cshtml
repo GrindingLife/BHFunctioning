@@ -42,10 +42,23 @@
     $("input[name='Circadian']").click((ev) => {
         Circadian = ev.currentTarget.attributes.value.value;
     })
-     $("input[name='Sofas']").click((ev) => {
-        SOFAS = ev.currentTarget.attributes.value.value;
+    $("input[name='btn1']").click((ev) => {
+        setbtn();
+        document.getElementById("b1").classList.add("btn-primary");
     })
+    $("input[name='btn2']").click((ev) => {
+        setbtn();
+        document.getElementById("b2").classList.add("btn-primary");
+    })
+    $("input[name='btn3']").click((ev) => {
+        setbtn();
+        document.getElementById("b3").classList.add("btn-primary");
+    })
+     
+    function setbtn(btn){
+        
 
+    }
 
     function getAlert() {
                     $.ajax({
@@ -87,7 +100,11 @@
                                 width: 650,
                                 height: 650,
                            
-                                title: 'Predicted functional change category',
+                                title: '',
+                                titleTextStyle: {
+                                    color: '#2780e3',
+                                    fontSize: 20
+                                },
                             
                                 slices: {
                                     0: { color: '#0000FF' },
@@ -119,6 +136,7 @@
                     google.charts.setOnLoadCallback(pieChart);
                     ClinicalStage = document.getElementById('ClinicalStage').value;
                     Tripartite = document.getElementById('Tripartite').value;
+                    SOFAS = document.getElementById('Sofas').value;
                     getAlert();
                     function drawChart1() {
                         $.ajax({
@@ -174,14 +192,50 @@
                 x[i].style.display = "none";
             }
             document.getElementById(graph).style.display = "block";
+            
+            document.getElementById("b1").classList.remove("btn-primary");
+            document.getElementById("b2").classList.remove("btn-primary");
+            document.getElementById("b3").classList.remove("btn-primary");
+            document.getElementById("b1").classList.add("btn-outline-secondary");
+            document.getElementById("b2").classList.add("btn-outline-secondary");
+            document.getElementById("b3").classList.add("btn-outline-secondary");
 
+            if(graph == "graph1"){
+                 document.getElementById("b1").classList.toggle("btn-primary");
+                 document.getElementById("b1").style.color = "white";
+                 document.getElementById("b2").style.color = "black";
+                 document.getElementById("b3").style.color = "black";
+            }
+            if(graph == "graph2"){
+                 document.getElementById("b2").classList.toggle("btn-primary");
+                 document.getElementById("b2").style.color = "white";
+                 document.getElementById("b3").style.color = "black";
+                 document.getElementById("b1").style.color = "black";
+            }
+            if(graph == "graph3"){
+                 document.getElementById("b3").classList.toggle("btn-primary");
+                 document.getElementById("b3").style.color = "white";
+                 document.getElementById("b2").style.color = "black";
+                 document.getElementById("b1").style.color = "black";
+            }
         }
 </script>
 
-<div class="m-4">
+<div class="container container-fluid">
     <div class="row">
-        <form class=" col">
-            <table class="table form-control"> 
+        <div class="col"></div>
+        <div class="col">
+            <div id="GraphOptions" class="btn-group" style="display:none;">
+                <button class="btn btn-primary" id="b1" name="btn1" onclick="showGraph('graph1')">Graph 1</button>
+                <button class="btn btn-outline-secondary" id="b2" name="btn2" onclick="showGraph('graph2')">Graph 2</button>
+                <button class="btn btn-outline-secondary" id="b3" name="btn3" onclick="showGraph('graph3')">Graph 3</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <form class="col">
+            
+            <table class="table form-control-plaintext"> 
                 <tr class="row">
                     <div class="row pb-2">
                         <h2 class="text-primary">Enter inputs</h2>
@@ -325,18 +379,18 @@
                 </tr>
                 <tr>
                     <td class="d-table-cell p-1">
-                        <label class="p-1" asp-for="Sofas"></label>
+                        <label asp-for="Sofas"></label>
                         <span asp-validation-for="Sofas" class="text-danger"></span>
                     </td>
                     <td class="d-table-cell p-1">
                         <select asp-for="Sofas" class="dropdown dropdown-header dropdown-item-text dropdown-toggle" name="Sofas" id="Sofas">
                            
-                            <option class="dropdown-item" value="4">4</option>
-                            <option class="dropdown-item" value="5">5</option>
-                            <option class="dropdown-item" value="6">6</option>
-                            <option class="dropdown-item" value="7">7</option>
-                            <option class="dropdown-item" value="8">8</option>
-                            <option class="dropdown-item" value="9">9</option>
+                            <option class="dropdown-item" value="4">Serious impairment (< 50) </option>
+                            <option class="dropdown-item" value="5">Moderate impairment (51-60)</option>
+                            <option class="dropdown-item" value="6">Mild impairment (61-70)</option>
+                            <option class="dropdown-item" value="7">Slight impairment (71-80)</option>
+                            <option class="dropdown-item" value="8">Good functioning (81-90)</option>
+                            <option class="dropdown-item" value="9">Superior functioning(91-100)</option>
                         </select>
                         
                     </td>
@@ -351,20 +405,21 @@
             </table>
             
         </form>
-        <div class="graph justify-content-center col" id="graph1">
-            <div id="chart_div" style="width:auto; height:auto"></div>
-        </div>
-        <div class="graph justify-content-center col" id="graph2">
-            <div id="chart_div2" style="width:auto; height:auto"></div>
-        </div>
-        <div class="text-center"><span id="alertText" class="text-danger text-center"></span></div>
+        
+        
         <div class="col">
-            <div id="GraphOptions" class="btn-group" style="display:none;">
-                @*<button class="btn btn-primary" onclick="showGraph('graph1')">Graph 1</button>
-                <button class="btn btn-outline-secondary" onclick="showGraph('graph2')">Graph 2</button>
-                <button class="btn btn-outline-secondary" onclick="showGraph('graph3')">Graph 3</button>*@
+            
+            <div class="graph justify-content-center col" id="graph1">
+                <div id="chart_div" style="width:auto; height:auto"></div>
             </div>
-
+            <div class="graph justify-content-center col" id="graph2" style="display:none;">
+                <h2 class="text-primary"> Predicted functional change category </h2>
+                <div id="chart_div2" style="width:auto; height:auto"></div>
+            </div>
+            <div class="graph justify-content-center col" id="graph3" style="display:none;">
+                <div id="chart_div3" style="width:auto; height:auto"></div>
+            </div>
+            <div class="text-center"><span id="alertText" class="text-danger text-center"></span></div>
         </div>
     </div>
 </div>

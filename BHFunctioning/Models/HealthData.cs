@@ -54,14 +54,18 @@ namespace BHFunctioning.Models
         public float StandardDeviation { get; set; }
 
     }
-    public class HealthDataFuture
-    {       
+
+    public class DensityData
+    {
+
         public string Id { get; set; }
-        public int Month { get; set; }
-        [Range(0, 9)]
-        public int Sofas { get; set; }
-        [ForeignKey("HealthData")]
-        public string HealthDataFK { get; set; }
+        [Name("x")]
+        public string X { get; set; }
+        [Name("y")]
+        public string Y { get; set; }
+
     }
+
+
 
 }

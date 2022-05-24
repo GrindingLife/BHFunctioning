@@ -22,11 +22,11 @@
             <div class="container-fluid">
                 @if (SignInManager.IsSignedIn(User))
                 {
-                    <a class="navbar-brand" asp-controller="Home" asp-action="Index">YODA-F</a>
+                    <a class="navbar-brand" asp-controller="Home" asp-action="Index">YODA</a>
                 }
                 else
                 {
-                    <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">YODA-F</a>
+                    <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">YODA</a>
 
                 }
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -41,7 +41,7 @@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="DataViz" asp-action="Index">Tool</a>
+                                <a class="nav-link text-dark" asp-controller="DataViz" asp-action="Index">Prediction</a>
                             </li>
                             @if (User.IsInRole("Administrator"))
                             {

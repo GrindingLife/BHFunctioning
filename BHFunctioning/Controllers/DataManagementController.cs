@@ -39,7 +39,7 @@ namespace BHFunctioning.Controllers
             //    _db.HealthDataFuture.Remove(ele);
             //    await _db.SaveChangesAsync();
             //}
-
+            ViewBag.Results = "Successfully deleted database entries";
             return View("Index");
 
         }
@@ -47,7 +47,6 @@ namespace BHFunctioning.Controllers
         [HttpPost]
         public async Task<IActionResult> FileUpload(List<IFormFile> files)
         {
-
 
             string path = Path.Combine(Directory.GetCurrentDirectory());
             if (!Directory.Exists(path))
@@ -64,6 +63,7 @@ namespace BHFunctioning.Controllers
                     postedFile.CopyTo(stream);
                     uploadedFiles.Add(fileName);
                 }
+                ViewBag.Results = "Successfully uploaded csv file!";
             }
 
             // process uploaded files
@@ -78,10 +78,11 @@ namespace BHFunctioning.Controllers
             {
                 CsvRead r = new();
                 r.readToDB(_db);
+                ViewBag.Results = "Successfully added csv file into database";
             }
             else
             {
-                ModelState.AddModelError("","Data is already in the database");
+                ViewBag.Results = "Data is already in the database";
             }
             
             return View("Index");
@@ -96,6 +97,7 @@ namespace BHFunctioning.Controllers
                 _db.InputLogs.Remove(ele);
                 _db.SaveChangesAsync();
             }
+            ViewBag.Results = "Successfully cleared all user input logs";
             return View("Index");
         }
 

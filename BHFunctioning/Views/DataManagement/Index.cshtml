@@ -49,6 +49,14 @@
             </tr>
             <tr>
                 <td>
+                    <p>Upload Database CSV</p>
+                </td>
+                <td>
+                    <button onclick="upload()" class="btn btn-primary w-100">Upload</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
                     <p>Initiate Database with CSV</p>
                 </td>
                 <td>
@@ -63,17 +71,12 @@
                     <button onclick="ConfirmDeleteHealth()" class="btn btn-danger w-100">Delete</button>
                 </td>
             </tr>
-            <tr>
-                <td>
-                    <p>Upload Database CSV</p>
-                </td>
-                <td>
-                    <button onclick="upload()" class="btn btn-primary w-100">Upload</button>
-                </td>
-            </tr>
+            
         </table>
     </div>
-
+    <div class="container">
+        <span class="text-center text-info">@ViewBag.Results</span>
+    </div>
     <div class="modal fade" id="myModalUpload">
         <div class="modal-dialog">
             <div class="modal-content">
