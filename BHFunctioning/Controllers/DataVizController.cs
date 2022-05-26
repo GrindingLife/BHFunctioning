@@ -28,7 +28,7 @@ namespace BHFunctioning.Controllers
         }
 
 
-        
+
         [HttpPost]
         public IActionResult GetAlert(bool NEET, bool Selfharm, bool Psychosis, bool Medical, bool ChildDx, bool Circadian, int Tripartite, int ClinicalStage, int SOFAS)
         {
@@ -75,8 +75,48 @@ namespace BHFunctioning.Controllers
                 txt = "Alert! Predicting a significant (10 points) drop in SOFAS score (after 3 months) ";
             }
             else txt = "";
-            
+
             return Json(txt);
+        }
+
+        [HttpPost]
+        public IActionResult DensityLineChart(int sofas)
+        {
+            List<object> chartData = new List<object>();
+            chartData.Add(new object[]
+                            {
+                                "X", "Y",
+                            });
+            chartData.Add(new object[]
+                            {
+                                24, 0,
+                            });
+            /* Format data to graph density line chart*/
+            List<DensityData> list = _db.DensityDatas.OrderBy(o => o.X).ToList();
+            double sum = 0;
+            foreach (var ele in list)
+            {
+                sum += Convert.ToDouble(ele.X);
+                if (double.Parse(ele.X) > sofas)
+                {
+                    //create star for position to show this is user input area
+                    chartData.Add(new object[]
+                    {
+                    Convert.ToDouble(ele.X), Convert.ToDouble(ele.Y)
+                    });
+                }
+                else
+                {
+                    chartData.Add(new object[]
+                    {
+                    ele.X, ele.Y, null, null
+                    });
+                }
+            }
+
+            chartData.Add(sum / list.Count);
+
+            return Json(chartData);
         }
 
         [HttpPost]
@@ -121,7 +161,7 @@ namespace BHFunctioning.Controllers
                             {
                                 "Deterioration", temp.Down
                             });
-            
+
             return Json(chartData);
         }
 

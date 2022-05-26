@@ -31,10 +31,43 @@ namespace BHFunctioning.Data
 
         }
 
+
+
+    }
+    public class DensityDataMap : ClassMap<DensityData>
+    {
+        public DensityDataMap()
+        {
+            Map(m => m.X).Name("x");
+            Map(m => m.Y).Name("y");
+
+        }
     }
     public class CsvRead
     {
+        public bool readToDBDensity(ApplicationDbContext _db)
+        {
+            List<DensityData> res = new();
+            using (var streamReader = new StreamReader(@"densityData.csv"))
+            {
+                using (var csvReader = new CsvReader(streamReader, CultureInfo.InvariantCulture))
+                {
+                    csvReader.Context.RegisterClassMap<DensityDataMap>();
+                    res = csvReader.GetRecords<DensityData>().ToList();
 
+                }
+            }
+            int i = 0;
+            foreach (DensityData data in res)
+            {
+                data.Id = i.ToString();
+                i++;
+                _db.DensityDatas.Add(data);
+                _db.SaveChanges();
+            }
+
+            return true;
+        }
         public bool readToDB(ApplicationDbContext _db)
         {
             List<HealthData> res = new();
@@ -44,7 +77,7 @@ namespace BHFunctioning.Data
                 {
                     csvReader.Context.RegisterClassMap<HealthClassMap>();
                     res = csvReader.GetRecords<HealthData>().ToList();
-                    
+
                 }
             }
 
@@ -59,5 +92,5 @@ namespace BHFunctioning.Data
         }
     }
 
-    
+
 }

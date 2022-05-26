@@ -57,7 +57,7 @@ namespace BHFunctioning.Models
 
     public class DensityData
     {
-
+        [Key]
         public string Id { get; set; }
         [Name("x")]
         public string X { get; set; }

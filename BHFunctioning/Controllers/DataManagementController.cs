@@ -84,10 +84,25 @@ namespace BHFunctioning.Controllers
             {
                 ViewBag.Results = "Data is already in the database";
             }
-            
+
             return View("Index");
         }
+        public ActionResult AddDensityCSV()
+        {
 
+            if (!_db.DensityDatas.Any())
+            {
+                CsvRead r = new();
+                r.readToDBDensity(_db);
+                ViewBag.Results = "Successfully added csv file into database";
+            }
+            else
+            {
+                ViewBag.Results = "Data is already in the database";
+            }
+
+            return View("Index");
+        }
         public IActionResult ClearLogs()
         {
             List<InputLog> lis = new();

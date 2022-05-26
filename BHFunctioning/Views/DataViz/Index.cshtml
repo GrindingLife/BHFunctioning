@@ -12,7 +12,9 @@
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
 
-
+    
+    var isGraphed = false;
+    var isGraphedDensity = false;
     window.onload = function(){
     var NEET;
     var Selfharm;
@@ -23,6 +25,7 @@
     var Tripartite;
     var ClinicalStage;
     var SOFAS;
+    var sofasV2;
     $("input[name='NEET']").click((ev) => {
         NEET = ev.currentTarget.attributes.value.value;
     })
@@ -55,11 +58,90 @@
         document.getElementById("b3").classList.add("btn-primary");
     })
      
-    function setbtn(btn){
-        
+    function drawChartDensity() {
+                            $.ajax({
+                                type: "POST",
+                                url: "/DataViz/DensityLineChart/?SOFAS="+SOFAS,
+                                data: {},
+                                contentType: "application/json; charset=utf-8",
+                                dataType: "json",
+                                success: function (r) {
+                                    //var data = google.visualization.arrayToDataTable(r);
+                                    var data = new google.visualization.DataTable();
+                                    data.addColumn('number', 'Functioning score');
+                                    data.addColumn('number', 'Frequency');
+                                    data.addColumn({type: 'string', role: 'annotation'});
+                                    data.addColumn({type: 'string', role: 'annotationText'});
+                                    data.addColumn({'type': 'string', 'role': 'style'});                              
+                                    var count = 0, count2 = 0;
+                                    var mean = r[r.length-1];
+                                    console.log(mean);
+                                    for(var ob = 0; ob < r.length - 2; ob += 1){                                      
 
-    }
-
+                                        if(parseFloat(r[ob][0]) > sofasV2 && count < 1){
+                                            data.addRow([ parseFloat(r[ob][0]), parseFloat(r[ob][1]), null, null, 'point { size: 13; sides: 4; shape-type: star; fill-color: #a52714; }']);                                            
+                                            count += 1;
+                                        }
+                                        else if(parseFloat(r[ob][0]) > mean && count2 < 1){
+                                            data.addRow([ parseFloat(r[ob][0]), parseFloat(r[ob][1]), 'Mean ', "Mean: "+ mean.toString()+", Frequency: " + r[ob][1] , null]);                                            
+                                            count2 += 1;
+                                        }
+                                        else {
+                                            data.addRow([ parseFloat(r[ob][0]), parseFloat(r[ob][1]), null, null, null]);
+                                        }
+                                    }
+                                    if(count < 1){
+                                            data.addRow([ SOFAS, 0, null, null, 'point { size: 13; sides: 4; shape-type: star; fill-color: #a52714; }']);                                            
+                                    }
+                                    isGraphedDensity = true;
+                                    var annotationColor = 'grey';
+                                    //graph options
+                                    var options = {
+                                        width: 700,
+                                        height: 650,
+                                        curveType: 'function',
+                                        pointSize: 0.2,
+                                        title: '',
+                                        hAxis: {
+                                            title: 'Functioning Score',
+                                                    
+                                        },
+                                        vAxis: {
+                                            title: 'Frequencry',
+                                            viewWindow:{
+                                                        
+                                            }
+                                        },
+                                        annotations: {
+                                            style: 'point',
+                                            stem: {
+                                                color: 'red',
+                                                width: 200
+                                            }
+                                        }
+                                            //series: {
+                                            //    4: { pointShape: 'star', sides: 4, dent: 0.3 } 
+                                            //}
+                                        }
+                                        var chart = new google.visualization.LineChart(document.getElementById('chart_divDensity'));
+                                        google.visualization.events.addListener(chart, 'ready', function () {
+                                            Array.prototype.forEach.call(document.getElementById("densityChart").getElementsByTagName('rect'), function(rect) {
+                                              if (rect.getAttribute('fill') === annotationColor) {
+                                                rect.setAttribute('width', '2000');
+                                              }
+                                              rect.setAttribute('length', 100);
+                                            });
+                                          });
+                                        chart.draw(data, options);
+                                },
+                                    failure: function (r) {
+                                    alert(r.d);
+                                },
+                                    error: function (r) {
+                                    alert(r.d);
+                                }
+                                });
+                            }
     function getAlert() {
                     $.ajax({
                         type: "POST",
@@ -83,7 +165,12 @@
                         }
                     });
                 }
-
+    function checkInputValid(input){
+        if(input >= 0 && input <= 100){
+            return true;
+        }
+        else return false;
+    }
 
     function pieChart() {
                     $.ajax({
@@ -94,6 +181,7 @@
                         dataType: "json",
                         success: function (r) {
                             var data = google.visualization.arrayToDataTable(r);
+                            isGraphed = true;
                             //graph options
                             var options = {
                                 'legend':'left',
@@ -126,65 +214,98 @@
                 }
 
         $(document).ready(function () {
-        var element = document.getElementById("graphData");
-        element.onclick = function(event){
+            //Listener for when first form submit button is pressed
+            var submitGraphData = document.getElementById("graphData");
+            submitGraphData.onclick = function(event){
+                //making the graphs options visible when the submit button is clicked and display the first graph   
+                document.getElementById('GraphOptions').style.display = "inline";
+                document.getElementById('graph1').style.display = "block";
+                //loading packages for google charts
+                google.charts.load('current', {'packages':['corechart']});
+                //google.charts.setOnLoadCallback(drawChart1);
+                google.charts.setOnLoadCallback(pieChart);
 
-                    document.getElementById('GraphOptions').style.display = "inline";
+                //setting final values that cant be sent using listener
+                ClinicalStage = document.getElementById('ClinicalStage').value;
+                Tripartite = document.getElementById('Tripartite').value;
+                SOFAS = document.getElementById('Sofas').value;
 
-                    google.charts.load('current', {'packages':['corechart']});
-                    google.charts.setOnLoadCallback(drawChart1);
-                    google.charts.setOnLoadCallback(pieChart);
-                    ClinicalStage = document.getElementById('ClinicalStage').value;
-                    Tripartite = document.getElementById('Tripartite').value;
-                    SOFAS = document.getElementById('Sofas').value;
-                    getAlert();
-                    function drawChart1() {
-                        $.ajax({
-                            type: "POST",
-                            url: "/DataViz/FutureSofasGraph/?NEET="+NEET+"&Selfharm="+Selfharm+"&Psychosis="+Psychosis+"&Medical="+Medical+"&ChildDx="+ChildDx+"&Circadian="+Circadian+"&Tripartite="+Tripartite+"&ClinicalStage="+ClinicalStage+"&SOFAS="+SOFAS,
-                            data: {},
-                            contentType: "application/json; charset=utf-8",
-                            dataType: "json",
-                            success: function (r) {
-                                var data = google.visualization.arrayToDataTable(r);
-
-                                //graph options
-                                var options = {
-                                    width: 650,
-                                    height: 650,
-                                    title: 'Predicted functional trajectory',
-                                    hAxis: {title: 'Time: Months'},
-                                    vAxis: {title: 'SOFAS score',
-                                    viewWindow:{
-                                        min:0,
-                                        max:100
-                                        }
-                                    },
-                                    series: {
-                                    0: { color: 'Black' },
-                                    1: { color: 'Orange', lineDashStyle: [4, 4] },
-                                    2: { color: 'Orange', lineDashStyle: [4, 4] }
-                                  }
-                                };
-                                var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-                                chart.draw(data, options);
-                            },
-                            failure: function (r) {
-                                alert(r.d);
-                            },
-                            error: function (r) {
-                                alert(r.d);
-                            }
-                        });
-                    }
+                //call get alert function to check if user input combinations creates an alert from database
+                getAlert();
+                
+                function drawChart1() {
+                    $.ajax({
+                        type: "POST",
+                        url: "/DataViz/FutureSofasGraph/?NEET="+NEET+"&Selfharm="+Selfharm+"&Psychosis="+Psychosis+"&Medical="+Medical+"&ChildDx="+ChildDx+"&Circadian="+Circadian+"&Tripartite="+Tripartite+"&ClinicalStage="+ClinicalStage+"&SOFAS="+SOFAS,
+                        data: {},
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (r) {
+                            var data = google.visualization.arrayToDataTable(r);
+                            isGraphed = true;
+                            //graph options
+                            var options = {
+                                width: 650,
+                                height: 650,
+                                title: 'Predicted functional trajectory',
+                                hAxis: {title: 'Time: Months'},
+                                vAxis: {title: 'SOFAS score',
+                                viewWindow:{
+                                    min:0,
+                                    max:100
+                                    }
+                                },
+                                series: {
+                                0: { color: 'Black' },
+                                1: { color: 'Orange', lineDashStyle: [4, 4] },
+                                2: { color: 'Orange', lineDashStyle: [4, 4] }
+                                }
+                            };
+                            var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+                            chart.draw(data, options);
+                        },
+                        failure: function (r) {
+                            alert(r.d);
+                        },
+                        error: function (r) {
+                            alert(r.d);
+                        }
+                    });
+                }
+                
             }
+
+            //Listener for when second form submit button is pressed
+            var submitGraphDensity = document.getElementById("btn_graphDensity");
+            submitGraphDensity.onclick = function(event){
+                sofasV2 = document.getElementById("SofasV2").value;
+                var spanErrDis = document.getElementById("span_inputErrDisplay");
+                // checking if the user has entered a value
+                if(sofasV2.length > 0){
+                    //checking if the value is valid
+                    if(checkInputValid(sofasV2)){
+                        spanErrDis.textContent = "";
+                        document.getElementById("densityChart").style.display = "block";
+                        google.charts.load('current', {
+                          callback: drawChartDensity,
+                          packages: ['corechart']
+                        });
+                        
+                    }
+                    else{
+                        spanErrDis.textContent = "Functioning score entered is not between 0 and 100!";
+
+                    }
+                }
+                else {
+                    spanErrDis.textContent = "Please enter a value between 0 and 100!";
+                }
+            }
+
         });
 
 
     };
-</script>
-
-<script>
     function showGraph(graph){
             var i;
             var x = document.getElementsByClassName("graph");
@@ -219,12 +340,46 @@
                  document.getElementById("b1").style.color = "black";
             }
         }
+
+    function showForm(){
+        var form1 = document.getElementById("form1");
+        var form2 = document.getElementById("form2");
+        var graphsOp = document.getElementById("GraphOptions");
+        var graphsOpbtn = document.getElementById("btns_graphSelection");
+        var graphs = document.getElementById("graphsGroup");
+        var densityChart = document.getElementById("densityChart");
+        if (form1.style.display === "none") {
+            form1.style.display = "inline-block";
+            form2.style.display = "none";
+            if(isGraphed == true)
+                graphsOp.style.display = "block";
+            else 
+                graphsOp.style.display = "none";
+
+            graphs.style.display = "inline-block";
+            densityChart.style.display = "none";
+
+        } else {
+            form2.style.display = "block";
+            form1.style.display = "none";
+            graphsOp.style.display = "none";
+            graphs.style.display = "none";
+            if(isGraphedDensity == false){
+                densityChart.style.display = "none";
+            }
+            else {
+                densityChart.style.display = "block";
+            }
+        }
+    }
 </script>
 
-<div class="container container-fluid">
-    <div class="row">
-        <div class="col"></div>
+<div class="container container-fluid" >
+    <div class="row" id="tabs">
         <div class="col">
+            <button class="btn btn-primary" id="btn_formDisplay" name="btn_formDisplay" onclick="showForm()">Toggle statistics form</button>
+        </div>
+        <div class="col" id="btns_graphSelection">
             <div id="GraphOptions" class="btn-group" style="display:none;">
                 <button class="btn btn-primary" id="b1" name="btn1" onclick="showGraph('graph1')">Graph 1</button>
                 <button class="btn btn-outline-secondary" id="b2" name="btn2" onclick="showGraph('graph2')">Graph 2</button>
@@ -232,10 +387,11 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <form class="col">
+    @*Input form 1 for change trajectory and also to display graphs for results*@
+    <div class="row" id="form1andResults">
+        <form id="form1" class="col">
             
-            <table class="table form-control-plaintext"> 
+            <table class="table form-control-plaintext col"> 
                 <tr class="row">
                     <div class="row pb-2">
                         <h2 class="text-primary">Enter inputs</h2>
@@ -402,24 +558,73 @@
                     </td>
                 </tr>
 
-            </table>
-            
+            </table>           
         </form>
-        
-        
-        <div class="col">
+
+        <div class="col" id="graphsGroup">
             
-            <div class="graph justify-content-center col" id="graph1">
-                <div id="chart_div" style="width:auto; height:auto"></div>
+            <div class="graph justify-content-center col" id="graph1" style="display:none;">              
+                <h2 class="text-primary" > Predicted functional change category </h2>
+                <div id="chart_div2" style="width:auto; height:auto" ></div>
             </div>
             <div class="graph justify-content-center col" id="graph2" style="display:none;">
-                <h2 class="text-primary"> Predicted functional change category </h2>
-                <div id="chart_div2" style="width:auto; height:auto"></div>
+                <div id="chart_div" style="width:auto; height:auto"></div>
             </div>
             <div class="graph justify-content-center col" id="graph3" style="display:none;">
                 <div id="chart_div3" style="width:auto; height:auto"></div>
             </div>
+        </div>
             <div class="text-center"><span id="alertText" class="text-danger text-center"></span></div>
+    </div>
+
+    @* Form 2 to input functioning score and display density line chart with users input *@
+    <div class="row" id="form2andResults" >
+        <form id="form2" class="col col-md-4" style="display:none;">
+            <table class="table form-control-plaintext"> 
+                <tr class="row">
+                    <div class="row">
+                        <h2 class="text-primary">Enter inputs</h2>
+                    </div>
+                </tr>
+
+                <tr>
+                    <th class="col">
+                        <div class="">
+                            Data
+                        </div>
+                    </th>
+                    <th class="col">
+                        <div class="center">
+                            Input
+                        </div>
+                    </th>
+
+                </tr>
+                <tr>
+                    <td class=" p-1">
+
+                        <label asp-for="Sofas"></label>
+                        <span asp-validation-for="Sofas" class="text-danger"></span>
+                    </td>
+                    <td class="d-table-cell p-1">
+                        <div class="">
+                            <input style="text-align: center;" id="SofasV2" type="number" placeholder="0-100"/>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="d-table-cell p-1">
+                        <button id="btn_graphDensity" type="button" class="btn btn-primary mb-2">Submit</button>
+                    </td>
+                </tr>     
+           </table>
+           <span id="span_inputErrDisplay" class="alert-danger"></span>
+        </form>
+        <div class="col">
+            <div class="justify-content-center col" id="densityChart" style="display:none;">              
+                <h2 class="text-primary" >Functional Density Line Chart</h2>
+                <div id="chart_divDensity" ></div>
+            </div>
         </div>
     </div>
 </div>
