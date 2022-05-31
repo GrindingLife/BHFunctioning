@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using BHFunctioning.Models;
 using BHFunctioning.Data;
-using BHFunctioning.Models;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
@@ -160,6 +159,51 @@ namespace BHFunctioning.Controllers
             chartData.Add(new object[]
                             {
                                 "Deterioration", temp.Down
+                            });
+
+            return Json(chartData);
+        }
+        [HttpPost]
+        public IActionResult PieChart2(bool NEET, bool Selfharm, bool Psychosis, bool Medical, bool ChildDx, bool Circadian, int Tripartite, int ClinicalStage, int SOFAS)
+        {
+
+            var temp = _db.HealthData.FirstOrDefault(
+                a => a.Medical == Medical &&
+                a.ChildDx == ChildDx &&
+                a.Selfharm == Selfharm &&
+                a.Sofas == SOFAS &&
+                a.ClinicalStage == ClinicalStage &&
+                a.Circadian == Circadian &&
+                a.Tripartite == Tripartite &&
+                a.Psychosis == Psychosis &&
+                a.NEET == NEET);
+
+            if (temp == null)
+            {
+                ModelState.AddModelError("", "Error finding health data, returns null");
+                return RedirectToAction("Index");
+            }
+
+            var id = temp.Id;
+            List<object> chartData = new List<object>();
+            chartData.Add(new object[]
+                            {
+                                "Threshold", "Probability"
+                            });
+
+            chartData.Add(new object[]
+                        {
+                                "50", temp.Threshold_50
+                        });
+
+
+            chartData.Add(new object[]
+                        {
+                                "60", temp.Threshold_60
+                        });
+            chartData.Add(new object[]
+                            {
+                                "70", temp.Threshold_70
                             });
 
             return Json(chartData);

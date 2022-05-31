@@ -15,7 +15,7 @@
         var ConfirmDeleteHealth = function () {
 
             $("#myModalHealthData").modal('show');
-
+            
         }
         var upload = function () {
 
@@ -93,7 +93,7 @@
                     <h3 class="modal-title">Upload Database csv file</h3>
                 </div>
                     <h2 class="m-2">UploadFile</h2>
-                    <p class="m-3">Make sure csv column uses the following names as headers: id, NEET, Selfharm, Psychosis, Medical, ChildDx, Circadian, Tripartite, ClinicalStage, Sofas, Alert, Constant, Up, Down, Mean, StandardDeviation</p>
+                    <p class="m-3">Make sure csv column uses the following names as headers: id, NEET, Selfharm, Psychosis, Medical, ChildDx, Circadian, Tripartite, ClinicalStage, Sofas, Alert, Constant, Up, Down, Mean, StandardDeviation, 50, 60, 70</p>
                     <form method="post" class="form-control" enctype="multipart/form-data" asp-controller="DataManagement" asp-action="FileUpload">
                         <div class="form-group p-1">
                             <div class="col-md-10">
@@ -127,6 +127,7 @@
                 </div>
                 <div class="modal-body">
                     <h4>Are you sure you want to clear Health data entries?</h4>
+                    <span id="err" class="text-danger"></span>
                 </div>
                 <div class="modal-footer">
                     <a asp-action="Index" class="btn btn-default">Cancel</a>

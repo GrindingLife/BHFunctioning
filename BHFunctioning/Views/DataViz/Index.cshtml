@@ -6,16 +6,11 @@
 }
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js">
     const { Alert } = require("../../wwwroot/lib/bootstrap/dist/js/bootstrap.bundle");
-
-    const { Alert } = require("../../wwwroot/lib/bootstrap/dist/js/bootstrap.bundle");
 </script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
-
-    
     var isGraphed = false;
     var isGraphedDensity = false;
-    window.onload = function(){
     var NEET;
     var Selfharm;
     var Psychosis;
@@ -26,122 +21,215 @@
     var ClinicalStage;
     var SOFAS;
     var sofasV2;
-    $("input[name='NEET']").click((ev) => {
-        NEET = ev.currentTarget.attributes.value.value;
-    })
-    $("input[name='Selfharm']").click((ev) => {
-        Selfharm = ev.currentTarget.attributes.value.value;
-
-    })
-    $("input[name='Psychosis']").click((ev) => {
-        Psychosis = ev.currentTarget.attributes.value.value;
-    })
-    $("input[name='Medical']").click((ev) => {
-        Medical = ev.currentTarget.attributes.value.value;
-    })
-    $("input[name='ChildDx']").click((ev) => {
-        ChildDx = ev.currentTarget.attributes.value.value;
-    })
-    $("input[name='Circadian']").click((ev) => {
-        Circadian = ev.currentTarget.attributes.value.value;
-    })
-    $("input[name='btn1']").click((ev) => {
-        setbtn();
-        document.getElementById("b1").classList.add("btn-primary");
-    })
-    $("input[name='btn2']").click((ev) => {
-        setbtn();
-        document.getElementById("b2").classList.add("btn-primary");
-    })
-    $("input[name='btn3']").click((ev) => {
-        setbtn();
-        document.getElementById("b3").classList.add("btn-primary");
-    })
-     
-    function drawChartDensity() {
-                            $.ajax({
-                                type: "POST",
-                                url: "/DataViz/DensityLineChart/?SOFAS="+SOFAS,
-                                data: {},
-                                contentType: "application/json; charset=utf-8",
-                                dataType: "json",
-                                success: function (r) {
-                                    //var data = google.visualization.arrayToDataTable(r);
-                                    var data = new google.visualization.DataTable();
-                                    data.addColumn('number', 'Functioning score');
-                                    data.addColumn('number', 'Frequency');
-                                    data.addColumn({type: 'string', role: 'annotation'});
-                                    data.addColumn({type: 'string', role: 'annotationText'});
-                                    data.addColumn({'type': 'string', 'role': 'style'});                              
-                                    var count = 0, count2 = 0;
-                                    var mean = r[r.length-1];
-                                    console.log(mean);
-                                    for(var ob = 0; ob < r.length - 2; ob += 1){                                      
-
-                                        if(parseFloat(r[ob][0]) > sofasV2 && count < 1){
-                                            data.addRow([ parseFloat(r[ob][0]), parseFloat(r[ob][1]), null, null, 'point { size: 13; sides: 4; shape-type: star; fill-color: #a52714; }']);                                            
-                                            count += 1;
+    function drawChart1() {
+                        $.ajax({
+                            type: "POST",
+                            url: "/DataViz/FutureSofasGraph/?NEET="+NEET+"&Selfharm="+Selfharm+"&Psychosis="+Psychosis+"&Medical="+Medical+"&ChildDx="+ChildDx+"&Circadian="+Circadian+"&Tripartite="+Tripartite+"&ClinicalStage="+ClinicalStage+"&SOFAS="+SOFAS,
+                            data: {},
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (r) {
+                                var data = google.visualization.arrayToDataTable(r);
+                                isGraphed = true;
+                                //graph options
+                                var options = {
+                                    width: 650,
+                                    height: 650,
+                                    title: '',
+                                    hAxis: {title: 'Time: Months'},
+                                    vAxis: {title: 'SOFAS score',
+                                    viewWindow:{
+                                        min:0,
+                                        max:100
                                         }
-                                        else if(parseFloat(r[ob][0]) > mean && count2 < 1){
-                                            data.addRow([ parseFloat(r[ob][0]), parseFloat(r[ob][1]), 'Mean ', "Mean: "+ mean.toString()+", Frequency: " + r[ob][1] , null]);                                            
-                                            count2 += 1;
-                                        }
-                                        else {
-                                            data.addRow([ parseFloat(r[ob][0]), parseFloat(r[ob][1]), null, null, null]);
-                                        }
+                                    },
+                                    series: {
+                                    0: { color: 'Black' },
+                                    1: { color: 'Orange', lineDashStyle: [4, 4] },
+                                    2: { color: 'Orange', lineDashStyle: [4, 4] }
                                     }
-                                    if(count < 1){
-                                            data.addRow([ SOFAS, 0, null, null, 'point { size: 13; sides: 4; shape-type: star; fill-color: #a52714; }']);                                            
-                                    }
-                                    isGraphedDensity = true;
-                                    var annotationColor = 'grey';
-                                    //graph options
-                                    var options = {
-                                        width: 700,
-                                        height: 650,
-                                        curveType: 'function',
-                                        pointSize: 0.2,
-                                        title: '',
-                                        hAxis: {
-                                            title: 'Functioning Score',
-                                                    
-                                        },
-                                        vAxis: {
-                                            title: 'Frequencry',
-                                            viewWindow:{
-                                                        
-                                            }
-                                        },
-                                        annotations: {
-                                            style: 'point',
-                                            stem: {
-                                                color: 'red',
-                                                width: 200
-                                            }
-                                        }
-                                            //series: {
-                                            //    4: { pointShape: 'star', sides: 4, dent: 0.3 } 
-                                            //}
-                                        }
-                                        var chart = new google.visualization.LineChart(document.getElementById('chart_divDensity'));
-                                        google.visualization.events.addListener(chart, 'ready', function () {
-                                            Array.prototype.forEach.call(document.getElementById("densityChart").getElementsByTagName('rect'), function(rect) {
-                                              if (rect.getAttribute('fill') === annotationColor) {
-                                                rect.setAttribute('width', '2000');
-                                              }
-                                              rect.setAttribute('length', 100);
-                                            });
-                                          });
-                                        chart.draw(data, options);
-                                },
-                                    failure: function (r) {
-                                    alert(r.d);
-                                },
-                                    error: function (r) {
-                                    alert(r.d);
-                                }
-                                });
+                                };
+                                var chart = new google.visualization.LineChart(document.getElementById('chart_div3'));
+                                chart.draw(data, options);
+                            },
+                            failure: function (r) {
+                                alert(r.d);
+                            },
+                            error: function (r) {
+                                alert(r.d);
                             }
+                        });
+    }    
+    function pieChart() {
+                $.ajax({
+                    type: "POST",
+                    url: "/DataViz/PieChart/?NEET="+NEET+"&Selfharm="+Selfharm+"&Psychosis="+Psychosis+"&Medical="+Medical+"&ChildDx="+ChildDx+"&Circadian="+Circadian+"&Tripartite="+Tripartite+"&ClinicalStage="+ClinicalStage+"&SOFAS="+SOFAS,
+                    data: {},
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (r) {
+                        var data = google.visualization.arrayToDataTable(r);
+                        isGraphed = true;
+                        //graph options
+                        var options = {
+                            'legend':'left',
+                            width: 650,
+                            height: 650,
+                           
+                            title: '',
+                            titleTextStyle: {
+                                color: '#2780e3',
+                                fontSize: 20
+                            },
+                            
+                            slices: {
+                                0: { color: '#0000FF' },
+                                1: { color: '#00FF00' },
+                                2: { color: '#FF0000' }
+                            }
+
+                        };
+                        var chart = new google.visualization.PieChart(document.getElementById('chart_div2'));
+                        chart.draw(data, options);
+                    },
+                    failure: function (r) {
+                        alert(r.d);
+                    },
+                    error: function (r) {
+                        alert(r.d);
+                    }
+                });
+    }
+    function pieChart2() {
+            $.ajax({
+                type: "POST",
+                url: "/DataViz/PieChart2/?NEET="+NEET+"&Selfharm="+Selfharm+"&Psychosis="+Psychosis+"&Medical="+Medical+"&ChildDx="+ChildDx+"&Circadian="+Circadian+"&Tripartite="+Tripartite+"&ClinicalStage="+ClinicalStage+"&SOFAS="+SOFAS,
+                data: {},
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    var data = google.visualization.arrayToDataTable(r);
+                    isGraphed = true;
+                    //graph options
+                    var options = {
+                        'legend':'left',
+                        width: 650,
+                        height: 650,
+                           
+                        title: '',
+                        titleTextStyle: {
+                            color: '#2780e3',
+                            fontSize: 20
+                        },
+                            
+                        slices: {
+                            0: { color: '#004c6d' },
+                            1: { color: '#5886a5' },
+                            2: { color: '#9dc6e0' }
+                        }
+
+                    };
+                    var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+                    chart.draw(data, options);
+                },
+                failure: function (r) {
+                    alert(r.d);
+                },
+                error: function (r) {
+                    alert(r.d);
+                }
+            });
+    }
+    function drawChartDensity() {
+            $.ajax({
+                type: "POST",
+                url: "/DataViz/DensityLineChart/?SOFAS="+SOFAS,
+                data: {},
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    //var data = google.visualization.arrayToDataTable(r);
+                    var data = new google.visualization.DataTable();
+                    data.addColumn('number', 'Functioning score');
+                    data.addColumn('number', 'Frequency');
+                    data.addColumn({type: 'string', role: 'annotation'});
+                    data.addColumn({type: 'string', role: 'annotationText'});
+                    data.addColumn({'type': 'string', 'role': 'style'});
+                    data.addColumn('number', 'User Input');
+                    data.addColumn('number', 'Mean');
+                    var count = 0, count2 = 0;
+                    var mean = r[r.length-1];
+                    console.log(mean);
+                    for(var ob = 0; ob < r.length - 2; ob += 1){                                      
+
+                        //adding user input marker in the datatable
+                        if(parseFloat(r[ob][0]) > sofasV2 && count < 1 && sofasV2 >= 24){
+                            //data.addRow([ parseFloat(r[ob][0]), parseFloat(r[ob][1]), null, null, 'point { size: 13; sides: 4; shape-type: star; fill-color: #a52714; }', 0, null]);
+                            data.addRow([ parseFloat(r[ob][0]), parseFloat(r[ob][1]), 'User Input', "Input: "+ sofasV2.toString(), null, 0, null]);                                            
+                            data.addRow([ parseFloat(r[ob][0]), parseFloat(r[ob][1]), null, null, null, 0.07, null]);                                            
+
+                            count += 1;
+                        }
+                        //adding mean in data table
+                        else if(parseFloat(r[ob][0]) > mean && count2 < 1){
+                            data.addRow([ parseFloat(r[ob][0]), parseFloat(r[ob][1]), 'Mean ', "Mean: "+ mean.toString()+", Frequency: " + r[ob][1] , null, null, 0]);
+                            data.addRow([ parseFloat(r[ob][0]), parseFloat(r[ob][1]), null, null , null, null, 0.07]);                                            
+                            count2 += 1;
+                        }
+                        else {
+                            data.addRow([ parseFloat(r[ob][0]), parseFloat(r[ob][1]), null, null, null, null, null]);
+                        }
+                    }
+                    if(count < 1){
+                            data.addRow([ SOFAS, 0, null, null, 'point { size: 13; sides: 4; shape-type: star; fill-color: #a52714; }']);                                            
+                    }
+                    isGraphedDensity = true;
+                    var annotationColor = 'grey';
+                    //graph options
+                    var options = {
+                        width: 700,
+                        height: 650,
+                        curveType: 'function',
+                        pointSize: 0.2,
+                        title: '',
+                        hAxis: {
+                            title: 'Functioning Score',
+                                                    
+                        },
+                        vAxis: {
+                            title: 'Frequencry',
+                            viewWindow:{
+                                                        
+                            }
+                        },
+                        annotations: {
+                            style: 'point',
+                            stem: {
+                                color: 'black',
+                                width: 200
+                            }
+                        },
+                        series: {
+                            2: { color: 'black' }, 
+                            1: { color: 'red' } 
+                        }
+                        }
+                        var chart = new google.visualization.LineChart(document.getElementById('chart_divDensity'));
+                        google.visualization.events.addListener(chart, 'ready', function () {
+                            Array.prototype.forEach.call(document.getElementById("densityChart").getElementsByTagName('rect'), function(rect) {
+                                              
+                            });
+                            });
+                        chart.draw(data, options);
+                },
+                    failure: function (r) {
+                    alert(r.d);
+                },
+                    error: function (r) {
+                    alert(r.d);
+                }
+            });
+    }
     function getAlert() {
                     $.ajax({
                         type: "POST",
@@ -164,183 +252,59 @@
                             alert(r.d);
                         }
                     });
-                }
+    }
     function checkInputValid(input){
         if(input >= 0 && input <= 100){
             return true;
         }
         else return false;
     }
-
-    function pieChart() {
-                    $.ajax({
-                        type: "POST",
-                        url: "/DataViz/PieChart/?NEET="+NEET+"&Selfharm="+Selfharm+"&Psychosis="+Psychosis+"&Medical="+Medical+"&ChildDx="+ChildDx+"&Circadian="+Circadian+"&Tripartite="+Tripartite+"&ClinicalStage="+ClinicalStage+"&SOFAS="+SOFAS,
-                        data: {},
-                        contentType: "application/json; charset=utf-8",
-                        dataType: "json",
-                        success: function (r) {
-                            var data = google.visualization.arrayToDataTable(r);
-                            isGraphed = true;
-                            //graph options
-                            var options = {
-                                'legend':'left',
-                                width: 650,
-                                height: 650,
-                           
-                                title: '',
-                                titleTextStyle: {
-                                    color: '#2780e3',
-                                    fontSize: 20
-                                },
-                            
-                                slices: {
-                                    0: { color: '#0000FF' },
-                                    1: { color: '#00FF00' },
-                                    2: { color: '#FF0000' }
-                                }
-
-                            };
-                            var chart = new google.visualization.PieChart(document.getElementById('chart_div2'));
-                            chart.draw(data, options);
-                        },
-                        failure: function (r) {
-                            alert(r.d);
-                        },
-                        error: function (r) {
-                            alert(r.d);
-                        }
-                    });
-                }
-
-        $(document).ready(function () {
-            //Listener for when first form submit button is pressed
-            var submitGraphData = document.getElementById("graphData");
-            submitGraphData.onclick = function(event){
-                //making the graphs options visible when the submit button is clicked and display the first graph   
-                document.getElementById('GraphOptions').style.display = "inline";
-                document.getElementById('graph1').style.display = "block";
-                //loading packages for google charts
-                google.charts.load('current', {'packages':['corechart']});
-                //google.charts.setOnLoadCallback(drawChart1);
-                google.charts.setOnLoadCallback(pieChart);
-
-                //setting final values that cant be sent using listener
-                ClinicalStage = document.getElementById('ClinicalStage').value;
-                Tripartite = document.getElementById('Tripartite').value;
-                SOFAS = document.getElementById('Sofas').value;
-
-                //call get alert function to check if user input combinations creates an alert from database
-                getAlert();
-                
-                function drawChart1() {
-                    $.ajax({
-                        type: "POST",
-                        url: "/DataViz/FutureSofasGraph/?NEET="+NEET+"&Selfharm="+Selfharm+"&Psychosis="+Psychosis+"&Medical="+Medical+"&ChildDx="+ChildDx+"&Circadian="+Circadian+"&Tripartite="+Tripartite+"&ClinicalStage="+ClinicalStage+"&SOFAS="+SOFAS,
-                        data: {},
-                        contentType: "application/json; charset=utf-8",
-                        dataType: "json",
-                        success: function (r) {
-                            var data = google.visualization.arrayToDataTable(r);
-                            isGraphed = true;
-                            //graph options
-                            var options = {
-                                width: 650,
-                                height: 650,
-                                title: 'Predicted functional trajectory',
-                                hAxis: {title: 'Time: Months'},
-                                vAxis: {title: 'SOFAS score',
-                                viewWindow:{
-                                    min:0,
-                                    max:100
-                                    }
-                                },
-                                series: {
-                                0: { color: 'Black' },
-                                1: { color: 'Orange', lineDashStyle: [4, 4] },
-                                2: { color: 'Orange', lineDashStyle: [4, 4] }
-                                }
-                            };
-                            var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-                            chart.draw(data, options);
-                        },
-                        failure: function (r) {
-                            alert(r.d);
-                        },
-                        error: function (r) {
-                            alert(r.d);
-                        }
-                    });
-                }
-                
-            }
-
-            //Listener for when second form submit button is pressed
-            var submitGraphDensity = document.getElementById("btn_graphDensity");
-            submitGraphDensity.onclick = function(event){
-                sofasV2 = document.getElementById("SofasV2").value;
-                var spanErrDis = document.getElementById("span_inputErrDisplay");
-                // checking if the user has entered a value
-                if(sofasV2.length > 0){
-                    //checking if the value is valid
-                    if(checkInputValid(sofasV2)){
-                        spanErrDis.textContent = "";
-                        document.getElementById("densityChart").style.display = "block";
-                        google.charts.load('current', {
-                          callback: drawChartDensity,
-                          packages: ['corechart']
-                        });
-                        
-                    }
-                    else{
-                        spanErrDis.textContent = "Functioning score entered is not between 0 and 100!";
-
-                    }
-                }
-                else {
-                    spanErrDis.textContent = "Please enter a value between 0 and 100!";
-                }
-            }
-
-        });
-
-
-    };
     function showGraph(graph){
-            var i;
-            var x = document.getElementsByClassName("graph");
-            for (i=0; i < x.length; i++){
-                x[i].style.display = "none";
-            }
-            document.getElementById(graph).style.display = "block";
-            
-            document.getElementById("b1").classList.remove("btn-primary");
-            document.getElementById("b2").classList.remove("btn-primary");
-            document.getElementById("b3").classList.remove("btn-primary");
-            document.getElementById("b1").classList.add("btn-outline-secondary");
-            document.getElementById("b2").classList.add("btn-outline-secondary");
-            document.getElementById("b3").classList.add("btn-outline-secondary");
-
-            if(graph == "graph1"){
-                 document.getElementById("b1").classList.toggle("btn-primary");
-                 document.getElementById("b1").style.color = "white";
-                 document.getElementById("b2").style.color = "black";
-                 document.getElementById("b3").style.color = "black";
-            }
-            if(graph == "graph2"){
-                 document.getElementById("b2").classList.toggle("btn-primary");
-                 document.getElementById("b2").style.color = "white";
-                 document.getElementById("b3").style.color = "black";
-                 document.getElementById("b1").style.color = "black";
-            }
-            if(graph == "graph3"){
-                 document.getElementById("b3").classList.toggle("btn-primary");
-                 document.getElementById("b3").style.color = "white";
-                 document.getElementById("b2").style.color = "black";
-                 document.getElementById("b1").style.color = "black";
-            }
+        var i;
+        var x = document.getElementsByClassName("graph");
+        for (i=0; i < x.length; i++){
+            x[i].style.display = "none";
         }
+        document.getElementById(graph).style.display = "block";
+            
+        document.getElementById("b1").classList.remove("btn-primary");
+        document.getElementById("b2").classList.remove("btn-primary");
+        document.getElementById("b3").classList.remove("btn-primary");
+        document.getElementById("b1").classList.add("btn-outline-secondary");
+        document.getElementById("b2").classList.add("btn-outline-secondary");
+        document.getElementById("b3").classList.add("btn-outline-secondary");
 
+        if(graph == "graph1"){
+                document.getElementById("b1").classList.toggle("btn-primary");
+                document.getElementById("b1").style.color = "white";
+                document.getElementById("b2").style.color = "black";
+                document.getElementById("b3").style.color = "black";
+                google.charts.load('current', {
+                    callback: pieChart,
+                    packages: ['corechart']
+                });
+        }
+        if(graph == "graph2"){
+                document.getElementById("b2").classList.toggle("btn-primary");
+                document.getElementById("b2").style.color = "white";
+                document.getElementById("b3").style.color = "black";
+                document.getElementById("b1").style.color = "black";
+                google.charts.load('current', {
+                    callback: pieChart2,
+                    packages: ['corechart']
+                });
+        }
+        if(graph == "graph3"){
+                document.getElementById("b3").classList.toggle("btn-primary");
+                document.getElementById("b3").style.color = "white";
+                document.getElementById("b2").style.color = "black";
+                document.getElementById("b1").style.color = "black";
+                google.charts.load('current', {
+                    callback: drawChart1,
+                    packages: ['corechart']
+                });
+        }
+    }
     function showForm(){
         var form1 = document.getElementById("form1");
         var form2 = document.getElementById("form2");
@@ -372,6 +336,101 @@
             }
         }
     }
+    window.onload = function(){
+        $("input[name='NEET']").click((ev) => {
+            NEET = ev.currentTarget.attributes.value.value;
+        })
+        $("input[name='Selfharm']").click((ev) => {
+            Selfharm = ev.currentTarget.attributes.value.value;
+        })
+        $("input[name='Psychosis']").click((ev) => {
+            Psychosis = ev.currentTarget.attributes.value.value;
+        })
+        $("input[name='Medical']").click((ev) => {
+            Medical = ev.currentTarget.attributes.value.value;
+        })
+        $("input[name='ChildDx']").click((ev) => {
+            ChildDx = ev.currentTarget.attributes.value.value;
+        })
+        $("input[name='Circadian']").click((ev) => {
+            Circadian = ev.currentTarget.attributes.value.value;
+        })
+        $("input[name='btn1']").click((ev) => {
+            setbtn();
+            document.getElementById("b1").classList.add("btn-primary");
+        })
+        $("input[name='btn2']").click((ev) => {
+            setbtn();
+            document.getElementById("b2").classList.add("btn-primary");
+        })
+        $("input[name='btn3']").click((ev) => {
+            setbtn();
+            document.getElementById("b3").classList.add("btn-primary");
+        })   
+        
+        $(document).ready(function () {
+            //Listener for when first form submit button is pressed
+            var submitGraphData = document.getElementById("graphData");
+            submitGraphData.onclick = function(event){
+                //making the graphs options visible when the submit button is clicked and display the first graph   
+                document.getElementById('GraphOptions').style.display = "inline";
+                if(isGraphed == false)
+                document.getElementById('graph1').style.display = "block";
+                //setting final values that cant be sent using listener
+                ClinicalStage = document.getElementById('ClinicalStage').value;
+                Tripartite = document.getElementById('Tripartite').value;
+                SOFAS = document.getElementById('Sofas').value;
+                //loading packages for google charts
+                google.charts.load('current', {'packages':['corechart']});
+                google.charts.load('current', {
+                    callback: drawChart1,
+                    packages: ['corechart']
+                });
+                google.charts.load('current', {
+                    callback: pieChart,
+                    packages: ['corechart']
+                });
+                google.charts.load('current', {
+                    callback: pieChart2,
+                    packages: ['corechart']
+                });
+
+
+                //call get alert function to check if user input combinations creates an alert from database
+                getAlert();
+                
+                
+                
+            }
+
+            //Listener for when second form submit button is pressed
+            var submitGraphDensity = document.getElementById("btn_graphDensity");
+            submitGraphDensity.onclick = function(event){
+                sofasV2 = document.getElementById("SofasV2").value;
+                var spanErrDis = document.getElementById("span_inputErrDisplay");
+                // checking if the user has entered a value
+                if(sofasV2.length > 0){
+                    //checking if the value is valid
+                    if(checkInputValid(sofasV2)){
+                        spanErrDis.textContent = "";
+                        document.getElementById("densityChart").style.display = "block";
+                        google.charts.load('current', {
+                            callback: drawChartDensity,
+                            packages: ['corechart']
+                        });
+                        
+                    }
+                    else{
+                        spanErrDis.textContent = "Functioning score entered is not between 0 and 100!";
+
+                    }
+                }
+                else {
+                    spanErrDis.textContent = "Please enter a value between 0 and 100!";
+                }
+            }
+        });
+    };
 </script>
 
 <div class="container container-fluid" >
@@ -568,15 +627,16 @@
                 <div id="chart_div2" style="width:auto; height:auto" ></div>
             </div>
             <div class="graph justify-content-center col" id="graph2" style="display:none;">
+                <h2 class="text-primary" > Predicted threshold probability </h2>
                 <div id="chart_div" style="width:auto; height:auto"></div>
             </div>
             <div class="graph justify-content-center col" id="graph3" style="display:none;">
+                <h2 class="text-primary" > Predicted functional trajectory </h2>
                 <div id="chart_div3" style="width:auto; height:auto"></div>
             </div>
         </div>
             <div class="text-center"><span id="alertText" class="text-danger text-center"></span></div>
     </div>
-
     @* Form 2 to input functioning score and display density line chart with users input *@
     <div class="row" id="form2andResults" >
         <form id="form2" class="col col-md-4" style="display:none;">

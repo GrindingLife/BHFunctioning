@@ -52,7 +52,12 @@ namespace BHFunctioning.Models
         public float Mean { get; set; }
         [Name("StandardDeviation")]
         public float StandardDeviation { get; set; }
-
+        [Name("50")]
+        public float Threshold_50 { get; set; }
+        [Name("60")]
+        public float Threshold_60 { get; set; }
+        [Name("70")]
+        public float Threshold_70 { get; set; }
     }
 
     public class DensityData
