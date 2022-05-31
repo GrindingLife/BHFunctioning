@@ -24,4 +24,10 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\Images\brain-removebg-preview.png" />
+    <None Include="wwwroot\Images\USYD-Logo-removebg-preview.png" />
+    <None Include="wwwroot\Images\Western-Sydney-University_Stacked-Logo-200x200-1-removebg-preview.png" />
+  </ItemGroup>
+
 </Project>

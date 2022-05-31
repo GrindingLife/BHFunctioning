@@ -28,11 +28,10 @@ namespace BHFunctioning.Data
             Map(m => m.Down).Name("Down");
             Map(m => m.Mean).Name("Mean");
             Map(m => m.StandardDeviation).Name("StandardDeviation");
-
+            Map(m => m.Threshold_50).Name("50");
+            Map(m => m.Threshold_60).Name("60");
+            Map(m => m.Threshold_70).Name("70");
         }
-
-
-
     }
     public class DensityDataMap : ClassMap<DensityData>
     {
