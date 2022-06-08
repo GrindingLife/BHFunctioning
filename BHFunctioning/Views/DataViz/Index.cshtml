@@ -312,8 +312,10 @@
         var graphsOpbtn = document.getElementById("btns_graphSelection");
         var graphs = document.getElementById("graphsGroup");
         var densityChart = document.getElementById("densityChart");
+        var alertTxt = document.getElementById("alertText");
         if (form1.style.display === "none") {
             form1.style.display = "inline-block";
+            alertTxt.style.display = "block";
             form2.style.display = "none";
             if(isGraphed == true)
                 graphsOp.style.display = "block";
@@ -328,6 +330,7 @@
             form1.style.display = "none";
             graphsOp.style.display = "none";
             graphs.style.display = "none";
+            alertTxt.style.display = "none";
             if(isGraphedDensity == false){
                 densityChart.style.display = "none";
             }
