@@ -7,7 +7,7 @@ using BHFunctioning.Models;
 namespace BHFunctioning.Controllers
 {
     [Authorize(Roles = "Administrator")]
-    public class AdminController : Controller
+    public class AdminController : Microsoft.AspNetCore.Mvc.Controller
     {
         private readonly ApplicationDbContext _db;
         public readonly RoleManager<IdentityRole> _roleManager;

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BHFunctioning.Controllers
 {
     [Authorize(Roles = "Administrator")]
-    public class DataManagementController : Controller
+    public class DataManagementController : Microsoft.AspNetCore.Mvc.Controller
     {
         private readonly ApplicationDbContext _db;
         private readonly UserManager<IdentityUser> _userManager;

@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace BHFunctioning.Controllers
 {
     [Authorize]
-    public class DataVizController : Controller
+    public class DataVizController : Microsoft.AspNetCore.Mvc.Controller
     {
         private readonly ApplicationDbContext _db;
         private readonly UserManager<IdentityUser> _userManager;
@@ -183,7 +183,6 @@ namespace BHFunctioning.Controllers
                 ModelState.AddModelError("", "Error finding health data, returns null");
                 return RedirectToAction("Index");
             }
-
             var id = temp.Id;
             List<object> chartData = new List<object>();
             chartData.Add(new object[]

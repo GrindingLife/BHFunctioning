@@ -12,12 +12,14 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
+builder.Services.AddRazorPages();
+builder.Services.AddControllers();
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("RequireAdministratorRole",
          policy => policy.RequireRole("Administrator"));
 });
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddRoles<IdentityRole>()
@@ -52,9 +54,16 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapRazorPages();
+    endpoints.MapControllers();
+});
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
 app.Run();
+
